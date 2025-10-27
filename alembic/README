@@ -1,0 +1,47 @@
+# Alembic Migrations
+
+データベーススキーマのマイグレーション管理
+
+## セットアップ
+
+```bash
+# Alembicのインストール（requirements.txtに含まれています）
+pip install alembic
+
+# 初回マイグレーション作成
+alembic revision --autogenerate -m "Initial migration"
+
+# マイグレーション実行
+alembic upgrade head
+```
+
+## よく使うコマンド
+
+```bash
+# 現在のリビジョン確認
+alembic current
+
+# マイグレーション履歴表示
+alembic history --verbose
+
+# 新しいマイグレーション作成（自動検出）
+alembic revision --autogenerate -m "Add new column to books"
+
+# マイグレーション適用
+alembic upgrade head
+
+# 1つ前に戻す
+alembic downgrade -1
+
+# 特定のリビジョンまで戻す
+alembic downgrade <revision_id>
+
+# 全てのマイグレーションを取り消す
+alembic downgrade base
+```
+
+## 注意事項
+
+- モデルを変更したら必ず `alembic revision --autogenerate` を実行
+- 本番環境では必ずバックアップを取ってから実行
+- `alembic/env.py` に全モデルをimportする必要あり
