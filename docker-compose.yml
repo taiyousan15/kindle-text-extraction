@@ -52,11 +52,11 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - S3_ENDPOINT=${S3_ENDPOINT}
-      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
-      - S3_SECRET_KEY=${S3_SECRET_KEY}
-      - S3_BUCKET=${S3_BUCKET}
-      - JWT_SECRET=${JWT_SECRET:-change_this_secret_key}
+      - AMAZON_EMAIL=${AMAZON_EMAIL}
+      - AMAZON_PASSWORD=${AMAZON_PASSWORD}
+      - MONTHLY_TOKEN_CAP=${MONTHLY_TOKEN_CAP:-10000000}
+      - RELEARN_CRON=${RELEARN_CRON:-0 3 * * *}
+      - TIMEZONE=${TIMEZONE:-Asia/Tokyo}
       - TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
     volumes:
       - ./app:/app/app
@@ -84,10 +84,10 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - S3_ENDPOINT=${S3_ENDPOINT}
-      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
-      - S3_SECRET_KEY=${S3_SECRET_KEY}
-      - S3_BUCKET=${S3_BUCKET}
+      - AMAZON_EMAIL=${AMAZON_EMAIL}
+      - AMAZON_PASSWORD=${AMAZON_PASSWORD}
+      - MONTHLY_TOKEN_CAP=${MONTHLY_TOKEN_CAP:-10000000}
+      - TIMEZONE=${TIMEZONE:-Asia/Tokyo}
       - TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
     volumes:
       - ./app:/app/app
@@ -109,7 +109,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: kindle_streamlit
-    command: streamlit run app/ui/main.py --server.port 8501 --server.address 0.0.0.0
+    command: streamlit run app/ui/Home.py --server.port 8501 --server.address 0.0.0.0
     ports:
       - "8501:8501"
     environment:
@@ -121,6 +121,29 @@ services:
       - ./uploads:/app/uploads
     depends_on:
       - api
+    networks:
+      - kindle_network
+    restart: unless-stopped
+
+  # Celery Beat (Scheduler for relearn tasks)
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kindle_celery_beat
+    command: celery -A app.tasks.schedule beat --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER:-kindle_user}:${DB_PASSWORD:-kindle_password}@postgres:5432/${DB_NAME:-kindle_ocr}
+      - REDIS_URL=redis://redis:6379/0
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - RELEARN_CRON=${RELEARN_CRON:-0 3 * * *}
+      - TIMEZONE=${TIMEZONE:-Asia/Tokyo}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - kindle_network
     restart: unless-stopped

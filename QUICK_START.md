@@ -32,10 +32,11 @@ docker-compose up -d
 ```
 
 **起動するサービス**:
-- PostgreSQL（データベース）
+- PostgreSQL（データベース + pgvector拡張）
 - Redis（タスクキュー）
 - FastAPI（バックエンドAPI）
 - Celery Worker（OCR/RAG処理）
+- Celery Beat（スケジューラ：毎日03:00再学習）
 - Streamlit（Web UI）
 
 ---
@@ -73,9 +74,10 @@ python -m app.services.capture.selenium_capture
 
 ## 📚 ドキュメント
 
-- **完全なレポート**: `DEPLOYMENT_READY_REPORT.md`
+- **要件定義書（最新）**: `Kindle文字起こし要件定義書_v3_ローカル版.md`
+- **v2→v3変更サマリー**: `V3_CHANGES_SUMMARY.md`
+- **デプロイレポート**: `DEPLOYMENT_READY_REPORT.md`
 - **実装サマリー**: `IMPLEMENTATION_SUMMARY.md`
-- **要件定義書**: `Kindle文字起こし要件定義書_v2_改善版.md`
 
 ---
 
