@@ -1,0 +1,738 @@
+{
+  "summary": {
+    "total_tests": 47,
+    "passed": 27,
+    "failed": 20,
+    "pass_rate": 57.45,
+    "execution_time": 1.57,
+    "timestamp": "2025-10-29T03:31:16.315176"
+  },
+  "failures_by_severity": {
+    "CRITICAL": 5,
+    "HIGH": 11,
+    "MEDIUM": 4,
+    "LOW": 0
+  },
+  "critical_issues": [
+    {
+      "name": "Database connection successful",
+      "category": "Database",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "All required tables exist",
+      "category": "Database",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Authentication system present",
+      "category": "Security Vulnerabilities",
+      "passed": false,
+      "error": "Unexpected behavior: 404",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Rate limiting implemented",
+      "category": "Security Vulnerabilities",
+      "passed": false,
+      "error": "No rate limiting - vulnerable to DDoS attacks",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "No hardcoded user_id=1 in code",
+      "category": "Data Integrity",
+      "passed": false,
+      "error": "user_id=1 hardcoded throughout codebase - all users share same account",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    }
+  ],
+  "high_issues": [
+    {
+      "name": "pgvector extension installed",
+      "category": "Database",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Performance indexes exist",
+      "category": "Database",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "RAG query endpoint",
+      "category": "RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0078277587890625
+    },
+    {
+      "name": "Index content endpoint",
+      "category": "RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.004090785980224609
+    },
+    {
+      "name": "Vector search endpoint",
+      "category": "RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0027430057525634766
+    },
+    {
+      "name": "Create summary endpoint",
+      "category": "Summary Endpoints",
+      "passed": false,
+      "error": "Status code 400",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.01423192024230957
+    },
+    {
+      "name": "Extract knowledge endpoint",
+      "category": "Knowledge Endpoints",
+      "passed": false,
+      "error": "Status code 400",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.009132862091064453
+    },
+    {
+      "name": "HTTPS enforced",
+      "category": "Security Vulnerabilities",
+      "passed": false,
+      "error": "Using HTTP instead of HTTPS - data transmitted in plaintext",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Database queries optimized",
+      "category": "Performance",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Handles missing required fields",
+      "category": "Error Handling",
+      "passed": false,
+      "error": "Expected 422, got 404",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Foreign key constraints enforced",
+      "category": "Data Integrity",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    }
+  ],
+  "medium_issues": [
+    {
+      "name": "RAG stats endpoint",
+      "category": "RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.0052280426025390625
+    },
+    {
+      "name": "Extract entities endpoint",
+      "category": "Knowledge Endpoints",
+      "passed": false,
+      "error": "Status code 400",
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.007297039031982422
+    },
+    {
+      "name": "List business files endpoint",
+      "category": "Business RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.003606081008911133
+    },
+    {
+      "name": "Handles empty requests",
+      "category": "Edge Cases",
+      "passed": false,
+      "error": "Unexpected response: 404",
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.0
+    }
+  ],
+  "results_by_category": {
+    "System Health": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "Database": {
+      "total": 4,
+      "passed": 0,
+      "failed": 4
+    },
+    "Core API Endpoints": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "OCR Endpoints": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0
+    },
+    "Auto-Capture Endpoints": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "RAG Endpoints": {
+      "total": 4,
+      "passed": 0,
+      "failed": 4
+    },
+    "Summary Endpoints": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1
+    },
+    "Knowledge Endpoints": {
+      "total": 3,
+      "passed": 1,
+      "failed": 2
+    },
+    "Business RAG Endpoints": {
+      "total": 4,
+      "passed": 3,
+      "failed": 1
+    },
+    "Feedback Endpoints": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "Security Vulnerabilities": {
+      "total": 5,
+      "passed": 2,
+      "failed": 3
+    },
+    "Performance": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1
+    },
+    "Error Handling": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1
+    },
+    "Data Integrity": {
+      "total": 2,
+      "passed": 0,
+      "failed": 2
+    },
+    "Edge Cases": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1
+    }
+  },
+  "all_results": [
+    {
+      "name": "Root endpoint accessible",
+      "category": "System Health",
+      "passed": true,
+      "error": null,
+      "severity": "CRITICAL",
+      "details": {
+        "message": "Kindle OCR API",
+        "version": "1.0.0 (Phase 1 MVP)",
+        "docs": "/docs",
+        "health": "/health"
+      },
+      "execution_time": 0.08183002471923828
+    },
+    {
+      "name": "Health endpoint functional",
+      "category": "System Health",
+      "passed": true,
+      "error": null,
+      "severity": "CRITICAL",
+      "details": {
+        "status": "healthy",
+        "database": "postgresql",
+        "pool_status": "Pool size: 10  Connections in pool: 1 Current Overflow: -9 Current Checked out connections: 0",
+        "pool_size": 10,
+        "checked_out": 0
+      },
+      "execution_time": 0.3238227367401123
+    },
+    {
+      "name": "API documentation accessible",
+      "category": "System Health",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.002937793731689453
+    },
+    {
+      "name": "Database connection successful",
+      "category": "Database",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "All required tables exist",
+      "category": "Database",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "pgvector extension installed",
+      "category": "Database",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Performance indexes exist",
+      "category": "Database",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Root endpoint",
+      "category": "Core API Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.010673046112060547
+    },
+    {
+      "name": "Health check",
+      "category": "Core API Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.03140711784362793
+    },
+    {
+      "name": "API documentation",
+      "category": "Core API Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.0035119056701660156
+    },
+    {
+      "name": "OCR upload endpoint accessible",
+      "category": "OCR Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.051553964614868164
+    },
+    {
+      "name": "Job status endpoint accessible",
+      "category": "OCR Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.08299493789672852
+    },
+    {
+      "name": "Start capture endpoint",
+      "category": "Auto-Capture Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.019568920135498047
+    },
+    {
+      "name": "Capture status endpoint",
+      "category": "Auto-Capture Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.033564090728759766
+    },
+    {
+      "name": "List capture jobs endpoint",
+      "category": "Auto-Capture Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.03912806510925293
+    },
+    {
+      "name": "RAG query endpoint",
+      "category": "RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0078277587890625
+    },
+    {
+      "name": "Index content endpoint",
+      "category": "RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.004090785980224609
+    },
+    {
+      "name": "Vector search endpoint",
+      "category": "RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0027430057525634766
+    },
+    {
+      "name": "RAG stats endpoint",
+      "category": "RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.0052280426025390625
+    },
+    {
+      "name": "Create summary endpoint",
+      "category": "Summary Endpoints",
+      "passed": false,
+      "error": "Status code 400",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.01423192024230957
+    },
+    {
+      "name": "Get summary endpoint",
+      "category": "Summary Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.006224870681762695
+    },
+    {
+      "name": "Extract knowledge endpoint",
+      "category": "Knowledge Endpoints",
+      "passed": false,
+      "error": "Status code 400",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.009132862091064453
+    },
+    {
+      "name": "Extract entities endpoint",
+      "category": "Knowledge Endpoints",
+      "passed": false,
+      "error": "Status code 400",
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.007297039031982422
+    },
+    {
+      "name": "Get knowledge endpoint",
+      "category": "Knowledge Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.0068187713623046875
+    },
+    {
+      "name": "Business RAG health check",
+      "category": "Business RAG Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {
+        "status": "healthy",
+        "service": "business_rag",
+        "mock_mode": false
+      },
+      "execution_time": 0.006699085235595703
+    },
+    {
+      "name": "Business upload endpoint",
+      "category": "Business RAG Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.005520820617675781
+    },
+    {
+      "name": "Business query endpoint",
+      "category": "Business RAG Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.006384849548339844
+    },
+    {
+      "name": "List business files endpoint",
+      "category": "Business RAG Endpoints",
+      "passed": false,
+      "error": "Status code 404",
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.003606081008911133
+    },
+    {
+      "name": "Feedback stats endpoint",
+      "category": "Feedback Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {
+        "total_feedbacks": 0,
+        "average_rating": 0.0,
+        "rating_distribution": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0
+        },
+        "positive_count": 0,
+        "negative_count": 0,
+        "neutral_count": 0,
+        "recent_feedbacks": 0,
+        "timestamp": "2025-10-28T18:31:15.747798"
+      },
+      "execution_time": 0.04502296447753906
+    },
+    {
+      "name": "Submit feedback endpoint",
+      "category": "Feedback Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.008226156234741211
+    },
+    {
+      "name": "List feedbacks endpoint",
+      "category": "Feedback Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.030445098876953125
+    },
+    {
+      "name": "Feedback insights endpoint",
+      "category": "Feedback Endpoints",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.037416934967041016
+    },
+    {
+      "name": "Authentication system present",
+      "category": "Security Vulnerabilities",
+      "passed": false,
+      "error": "Unexpected behavior: 404",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Rate limiting implemented",
+      "category": "Security Vulnerabilities",
+      "passed": false,
+      "error": "No rate limiting - vulnerable to DDoS attacks",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "HTTPS enforced",
+      "category": "Security Vulnerabilities",
+      "passed": false,
+      "error": "Using HTTP instead of HTTPS - data transmitted in plaintext",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "SQL injection protection",
+      "category": "Security Vulnerabilities",
+      "passed": true,
+      "error": null,
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "File upload validation present",
+      "category": "Security Vulnerabilities",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Health endpoint response < 200ms",
+      "category": "Performance",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {
+        "average_ms": 11.46
+      },
+      "execution_time": 0.0
+    },
+    {
+      "name": "Handles 10 concurrent requests",
+      "category": "Performance",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {
+        "total_time_seconds": 0.06
+      },
+      "execution_time": 0.0
+    },
+    {
+      "name": "Database queries optimized",
+      "category": "Performance",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Handles invalid JSON gracefully",
+      "category": "Error Handling",
+      "passed": true,
+      "error": null,
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Handles missing required fields",
+      "category": "Error Handling",
+      "passed": false,
+      "error": "Expected 422, got 404",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Handles 404 errors properly",
+      "category": "Error Handling",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Foreign key constraints enforced",
+      "category": "Data Integrity",
+      "passed": false,
+      "error": "connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user \"postgres\"\n",
+      "severity": "HIGH",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "No hardcoded user_id=1 in code",
+      "category": "Data Integrity",
+      "passed": false,
+      "error": "user_id=1 hardcoded throughout codebase - all users share same account",
+      "severity": "CRITICAL",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Handles large payloads",
+      "category": "Edge Cases",
+      "passed": true,
+      "error": null,
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.0
+    },
+    {
+      "name": "Handles empty requests",
+      "category": "Edge Cases",
+      "passed": false,
+      "error": "Unexpected response: 404",
+      "severity": "MEDIUM",
+      "details": {},
+      "execution_time": 0.0
+    }
+  ]
+}
