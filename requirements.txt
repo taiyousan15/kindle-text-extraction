@@ -30,7 +30,7 @@ webdriver-manager==4.0.1
 
 # ==================== RAG (Retrieval Augmented Generation) ====================
 langchain==0.0.340
-langchain-community==0.0.6
+langchain-community==0.4.1
 langchain-anthropic==0.0.2
 langchain-openai==0.0.2
 sentence-transformers==2.2.2
