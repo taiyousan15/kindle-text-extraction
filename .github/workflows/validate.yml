@@ -1,0 +1,84 @@
+name: Validate Workflows
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate workflow syntax
+      run: |
+        echo "Validating all workflow files..."
+
+        for workflow in .github/workflows/*.yml; do
+          echo "Checking $workflow"
+          # Basic YAML syntax validation
+          python -c "import yaml; yaml.safe_load(open('$workflow'))" || {
+            echo "::error::Invalid YAML syntax in $workflow"
+            exit 1
+          }
+        done
+
+        echo "All workflow files are valid!"
+
+    - name: Check for common issues
+      run: |
+        echo "Checking for common workflow issues..."
+
+        # Check for tabs in YAML (should use spaces)
+        if grep -P '\t' .github/workflows/*.yml; then
+          echo "::warning::Found tabs in workflow files. YAML should use spaces."
+        fi
+
+        # Check for very long lines
+        if grep -E '.{200,}' .github/workflows/*.yml; then
+          echo "::warning::Found very long lines in workflow files."
+        fi
+
+        echo "Common issues check complete!"
+
+    - name: Validate dependabot config
+      run: |
+        echo "Validating dependabot.yml..."
+        python -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" || {
+          echo "::error::Invalid YAML syntax in dependabot.yml"
+          exit 1
+        }
+        echo "Dependabot config is valid!"
+
+    - name: Security check for workflows
+      run: |
+        echo "Checking for security issues in workflows..."
+
+        # Check for hardcoded secrets
+        if grep -iE '(password|token|key|secret).*[:=].*["\047][^$]' .github/workflows/*.yml; then
+          echo "::error::Potential hardcoded secrets found in workflows!"
+          exit 1
+        fi
+
+        # Check for unsafe practices
+        if grep -E 'run:.*curl.*\|.*bash' .github/workflows/*.yml; then
+          echo "::warning::Found potentially unsafe curl | bash pattern"
+        fi
+
+        echo "Security check complete!"
+
+    - name: Generate workflow summary
+      run: |
+        echo "## Workflow Validation Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ All workflow files validated successfully!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Workflows Found:" >> $GITHUB_STEP_SUMMARY
+        for workflow in .github/workflows/*.yml; do
+          name=$(grep '^name:' "$workflow" | head -1 | sed 's/name: *//')
+          echo "- **$name** (\`$(basename $workflow)\`)" >> $GITHUB_STEP_SUMMARY
+        done

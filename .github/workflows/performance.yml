@@ -1,0 +1,91 @@
+name: Performance Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run performance tests weekly
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_USER: kindle_user
+          POSTGRES_PASSWORD: kindle_password
+          POSTGRES_DB: kindle_ocr_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y tesseract-ocr tesseract-ocr-jpn
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Initialize database
+      env:
+        PGPASSWORD: kindle_password
+      run: |
+        psql -h localhost -U kindle_user -d kindle_ocr_test -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+    - name: Run migrations
+      env:
+        DATABASE_URL: postgresql://kindle_user:kindle_password@localhost:5432/kindle_ocr_test
+      run: |
+        alembic upgrade head
+
+    - name: Run performance tests
+      env:
+        DATABASE_URL: postgresql://kindle_user:kindle_password@localhost:5432/kindle_ocr_test
+        REDIS_URL: redis://localhost:6379/0
+        SECRET_KEY: test-secret-key
+        JWT_SECRET_KEY: test-jwt-secret-key
+      run: |
+        pytest test_query_performance.py -v --tb=short
+
+    - name: Verify indexes
+      env:
+        DATABASE_URL: postgresql://kindle_user:kindle_password@localhost:5432/kindle_ocr_test
+      run: |
+        python verify_indexes.py
+
+    - name: Performance report summary
+      if: always()
+      run: |
+        echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Performance tests completed. Check logs for detailed metrics." >> $GITHUB_STEP_SUMMARY

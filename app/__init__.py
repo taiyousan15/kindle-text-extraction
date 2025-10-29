@@ -1,0 +1,1 @@
+"""Kindle OCR Application"""

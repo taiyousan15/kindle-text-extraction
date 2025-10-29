@@ -3,13 +3,15 @@ PostgreSQL データベース接続設定
 
 接続プール、セッション管理、エラーハンドリングを統合
 """
-from sqlalchemy import create_engine, event, pool
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, event, pool, text
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import QueuePool
 from typing import Generator
 import logging
 import os
+
+# Import Base from models to ensure consistency
+from app.models.base import Base
 
 logger = logging.getLogger(__name__)
 
@@ -46,9 +48,6 @@ SessionLocal = sessionmaker(
     bind=engine,
     expire_on_commit=False  # コミット後もオブジェクト使用可能
 )
-
-# Base class for models
-Base = declarative_base()
 
 
 # Dependency for FastAPI
@@ -115,7 +114,7 @@ def check_connection() -> bool:
     """
     try:
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
         logger.info("✅ Database connection successful")
         return True
     except Exception as e:
@@ -154,7 +153,7 @@ async def health_check() -> dict:
     try:
         # 接続テスト
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
 
         # プール状態取得
         pool_status = engine.pool.status()

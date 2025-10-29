@@ -14,11 +14,18 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.core.database import Base, DATABASE_URL
-# ここに全モデルをimport（自動検出のため）
-# from app.models.book import Book
-# from app.models.page import Page
-# from app.models.rag_document import RAGDocument
-# 以降、モデル作成後に追加
+# 全モデルをimport（自動検出のため）
+from app.models import (
+    User,
+    Job,
+    OCRResult,
+    Summary,
+    Knowledge,
+    BizFile,
+    BizCard,
+    Feedback,
+    RetrainQueue
+)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

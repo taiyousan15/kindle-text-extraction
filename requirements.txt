@@ -45,6 +45,13 @@ openai==1.3.7
 celery==5.3.4
 celery[redis]==5.3.4
 
+# ==================== Rate Limiting ====================
+slowapi==0.1.9
+
+# ==================== Authentication & Security ====================
+python-jose[cryptography]==3.3.0  # JWT token handling
+passlib[bcrypt]==1.7.4  # Password hashing
+
 # ==================== File Upload ====================
 python-multipart==0.0.6  # FastAPI file upload
 

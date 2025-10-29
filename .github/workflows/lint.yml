@@ -1,0 +1,78 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install linting tools
+      run: |
+        pip install --upgrade pip
+        pip install black==23.11.0 flake8==6.1.0 mypy==1.7.1 isort==5.12.0
+
+    - name: Run Black (code formatting check)
+      run: |
+        black --check --diff app/ || echo "::warning::Black found formatting issues"
+
+    - name: Run isort (import sorting check)
+      run: |
+        isort --check-only --diff app/ || echo "::warning::isort found import sorting issues"
+
+    - name: Run Flake8 (linting)
+      run: |
+        flake8 app/ \
+          --max-line-length=120 \
+          --exclude=__pycache__,*.pyc,.git,__init__.py,alembic \
+          --ignore=E203,W503,E501 \
+          --max-complexity=10 \
+          --count \
+          --statistics || echo "::warning::Flake8 found linting issues"
+
+    - name: Run MyPy (type checking)
+      run: |
+        mypy app/ \
+          --ignore-missing-imports \
+          --no-strict-optional \
+          --warn-unused-ignores \
+          --show-error-codes || echo "::warning::MyPy found type issues"
+
+    - name: Security check with Bandit
+      run: |
+        pip install bandit[toml]
+        bandit -r app/ -ll -f json -o bandit-report.json || true
+        bandit -r app/ -ll || echo "::warning::Bandit found security issues"
+
+    - name: Upload security report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: bandit-security-report
+        path: bandit-report.json
+        retention-days: 30
+
+    - name: Code quality summary
+      if: always()
+      run: |
+        echo "## Code Quality Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- Black formatting check: $(black --check app/ &>/dev/null && echo '✅ Passed' || echo '❌ Failed')" >> $GITHUB_STEP_SUMMARY
+        echo "- isort import sorting: $(isort --check-only app/ &>/dev/null && echo '✅ Passed' || echo '❌ Failed')" >> $GITHUB_STEP_SUMMARY
+        echo "- Flake8 linting: $(flake8 app/ --max-line-length=120 --exclude=__pycache__ &>/dev/null && echo '✅ Passed' || echo '❌ Failed')" >> $GITHUB_STEP_SUMMARY
+        echo "- MyPy type checking: $(mypy app/ --ignore-missing-imports &>/dev/null && echo '✅ Passed' || echo '❌ Failed')" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "See job logs for detailed information." >> $GITHUB_STEP_SUMMARY

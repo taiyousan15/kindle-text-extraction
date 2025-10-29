@@ -1,0 +1,123 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_USER: kindle_user
+          POSTGRES_PASSWORD: kindle_password
+          POSTGRES_DB: kindle_ocr_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y tesseract-ocr tesseract-ocr-jpn tesseract-ocr-eng
+        tesseract --version
+
+    - name: Install Python dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Wait for PostgreSQL
+      run: |
+        until pg_isready -h localhost -p 5432 -U kindle_user; do
+          echo "Waiting for PostgreSQL..."
+          sleep 2
+        done
+
+    - name: Initialize database with pgvector
+      env:
+        PGPASSWORD: kindle_password
+      run: |
+        psql -h localhost -U kindle_user -d kindle_ocr_test -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+    - name: Run database migrations
+      env:
+        DATABASE_URL: postgresql://kindle_user:kindle_password@localhost:5432/kindle_ocr_test
+        REDIS_URL: redis://localhost:6379/0
+      run: |
+        alembic upgrade head
+
+    - name: Run comprehensive tests
+      env:
+        DATABASE_URL: postgresql://kindle_user:kindle_password@localhost:5432/kindle_ocr_test
+        REDIS_URL: redis://localhost:6379/0
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        SECRET_KEY: test-secret-key-for-ci-pipeline-only
+        JWT_SECRET_KEY: test-jwt-secret-key-for-ci-pipeline-only
+        MONTHLY_TOKEN_CAP: 10000000
+        TIMEZONE: Asia/Tokyo
+        TESSDATA_PREFIX: /usr/share/tesseract-ocr/4.00/tessdata
+      run: |
+        pytest test_comprehensive.py -v --tb=short --maxfail=5
+
+    - name: Run additional test suites
+      env:
+        DATABASE_URL: postgresql://kindle_user:kindle_password@localhost:5432/kindle_ocr_test
+        REDIS_URL: redis://localhost:6379/0
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        SECRET_KEY: test-secret-key-for-ci-pipeline-only
+        JWT_SECRET_KEY: test-jwt-secret-key-for-ci-pipeline-only
+      run: |
+        pytest test_auth.py -v --tb=short
+        pytest test_rate_limiting.py -v --tb=short
+        pytest test_query_performance.py -v --tb=short
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: |
+          test_comprehensive_report.json
+          .pytest_cache/
+        retention-days: 30
+
+    - name: Test report summary
+      if: always()
+      run: |
+        if [ -f test_comprehensive_report.json ]; then
+          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          cat test_comprehensive_report.json >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        fi
