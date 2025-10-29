@@ -112,19 +112,21 @@ export default function RAGPage() {
                     <p className="text-sm leading-relaxed text-gray-900">{result.answer}</p>
                   </div>
 
-                  {result.sources && result.sources.length > 0 && (
+                  {result.sources && Array.isArray(result.sources) && result.sources.length > 0 && (
                     <div>
                       <h4 className="mb-3 text-sm font-semibold">参照元</h4>
                       <div className="space-y-2">
                         {result.sources.map((source: any, idx: number) => (
                           <div key={idx} className="rounded-lg border p-3 text-sm">
                             <div className="mb-2 flex items-center justify-between">
-                              <span className="font-medium">ページ {source.page_num}</span>
+                              <span className="font-medium">ページ {source?.page_num ?? 'N/A'}</span>
                               <span className="text-xs text-muted-foreground">
-                                信頼度: {(source.confidence * 100).toFixed(1)}%
+                                信頼度: {source?.confidence ? (source.confidence * 100).toFixed(1) : '0.0'}%
                               </span>
                             </div>
-                            <p className="text-xs text-gray-600">{source.text.substring(0, 150)}...</p>
+                            <p className="text-xs text-gray-600">
+                              {source?.text ? source.text.substring(0, 150) : 'テキストなし'}...
+                            </p>
                           </div>
                         ))}
                       </div>

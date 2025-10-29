@@ -13,15 +13,15 @@ import Link from "next/link";
 export default function HomePage() {
   const { data: jobs } = useQuery("jobs", () => api.listJobs(100));
 
-  const stats = jobs
+  const stats = Array.isArray(jobs)
     ? {
         totalJobs: jobs.length,
-        completedJobs: jobs.filter((j) => j.status === "completed").length,
-        processingJobs: jobs.filter((j) => j.status === "processing").length,
-        failedJobs: jobs.filter((j) => j.status === "failed").length,
-        totalPages: jobs.reduce((acc, j) => acc + j.pages_captured, 0),
+        completedJobs: jobs.filter((j) => j?.status === "completed").length,
+        processingJobs: jobs.filter((j) => j?.status === "processing").length,
+        failedJobs: jobs.filter((j) => j?.status === "failed").length,
+        totalPages: jobs.reduce((acc, j) => acc + (j?.pages_captured ?? 0), 0),
         successRate: jobs.length > 0
-          ? Math.round((jobs.filter((j) => j.status === "completed").length / jobs.length) * 100)
+          ? Math.round((jobs.filter((j) => j?.status === "completed").length / jobs.length) * 100)
           : 0,
       }
     : null;

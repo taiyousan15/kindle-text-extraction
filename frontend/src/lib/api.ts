@@ -111,10 +111,16 @@ export const api = {
   },
 
   listJobs: async (limit: number = 10): Promise<Job[]> => {
-    const response = await apiClient.get("/api/v1/ocr/jobs", {
-      params: { limit },
-    });
-    return response.data;
+    try {
+      const response = await apiClient.get("/api/v1/ocr/jobs", {
+        params: { limit },
+      });
+      // Ensure we always return an array
+      return Array.isArray(response.data) ? response.data : [];
+    } catch (error) {
+      console.error("Failed to list jobs:", error);
+      return [];
+    }
   },
 
   // RAG

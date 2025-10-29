@@ -21,16 +21,16 @@ export default function JobsPage() {
     }
   );
 
-  const filteredJobs = allJobs?.filter(
-    (job) => statusFilter === "all" || job.status === statusFilter
-  );
+  const filteredJobs = Array.isArray(allJobs)
+    ? allJobs.filter((job) => statusFilter === "all" || job?.status === statusFilter)
+    : [];
 
-  const stats = allJobs
+  const stats = Array.isArray(allJobs)
     ? {
         total: allJobs.length,
-        completed: allJobs.filter((j) => j.status === "completed").length,
-        processing: allJobs.filter((j) => j.status === "processing").length,
-        failed: allJobs.filter((j) => j.status === "failed").length,
+        completed: allJobs.filter((j) => j?.status === "completed").length,
+        processing: allJobs.filter((j) => j?.status === "processing").length,
+        failed: allJobs.filter((j) => j?.status === "failed").length,
       }
     : null;
 
@@ -48,17 +48,17 @@ export default function JobsPage() {
   };
 
   const exportToCSV = () => {
-    if (!filteredJobs) return;
+    if (!Array.isArray(filteredJobs) || filteredJobs.length === 0) return;
 
     const headers = ["Job ID", "Book Title", "Status", "Progress", "Pages", "Created At", "Completed At"];
     const rows = filteredJobs.map((job) => [
-      job.job_id,
-      job.book_title || "",
-      job.status,
-      job.progress,
-      job.pages_captured,
-      job.created_at,
-      job.completed_at || "",
+      job?.job_id ?? "",
+      job?.book_title ?? "",
+      job?.status ?? "",
+      job?.progress ?? 0,
+      job?.pages_captured ?? 0,
+      job?.created_at ?? "",
+      job?.completed_at ?? "",
     ]);
 
     const csv = [headers, ...rows].map((row) => row.join(",")).join("\n");
@@ -175,53 +175,53 @@ export default function JobsPage() {
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
               </div>
-            ) : filteredJobs && filteredJobs.length > 0 ? (
+            ) : Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
               <div className="space-y-3">
                 {filteredJobs.map((job) => (
                   <div
-                    key={job.job_id}
+                    key={job?.job_id ?? `job-${Math.random()}`}
                     className="rounded-lg border p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-4">
-                        {getStatusIcon(job.status)}
+                        {getStatusIcon(job?.status ?? "pending")}
                         <div className="flex-1">
                           <div className="flex items-center space-x-2">
-                            <h3 className="font-semibold">{job.book_title || "無題"}</h3>
+                            <h3 className="font-semibold">{job?.book_title ?? "無題"}</h3>
                             <span
                               className={`rounded-full px-2 py-0.5 text-xs ${getStatusColor(
-                                job.status
+                                job?.status ?? "pending"
                               )}`}
                             >
-                              {job.status}
+                              {job?.status ?? "不明"}
                             </span>
                           </div>
                           <div className="mt-1 space-y-1 text-sm text-muted-foreground">
-                            <p>ジョブID: {job.job_id.substring(0, 8)}...</p>
+                            <p>ジョブID: {job?.job_id ? job.job_id.substring(0, 8) : "N/A"}...</p>
                             <p>
-                              {job.pages_captured}ページ • 作成: {formatDate(job.created_at)}
+                              {job?.pages_captured ?? 0}ページ • 作成: {job?.created_at ? formatDate(job.created_at) : "不明"}
                             </p>
-                            {job.completed_at && (
+                            {job?.completed_at && (
                               <p>完了: {formatDate(job.completed_at)}</p>
                             )}
-                            {job.error_message && (
+                            {job?.error_message && (
                               <p className="text-red-600">エラー: {job.error_message}</p>
                             )}
                           </div>
                         </div>
                       </div>
                       <div className="ml-4 flex flex-col items-end">
-                        <div className="text-2xl font-bold">{job.progress}%</div>
+                        <div className="text-2xl font-bold">{job?.progress ?? 0}%</div>
                         <div className="mt-2 h-2 w-32 rounded-full bg-gray-200">
                           <div
                             className={`h-full rounded-full ${
-                              job.status === "failed"
+                              job?.status === "failed"
                                 ? "bg-red-500"
-                                : job.status === "completed"
+                                : job?.status === "completed"
                                 ? "bg-green-500"
                                 : "bg-blue-500"
                             }`}
-                            style={{ width: `${job.progress}%` }}
+                            style={{ width: `${job?.progress ?? 0}%` }}
                           />
                         </div>
                       </div>
