@@ -588,25 +588,104 @@ class SeleniumKindleCapture:
             self.close()
 
     def _detect_total_pages(self) -> Optional[int]:
-        """総ページ数を自動検出（Kindle Cloud Reader UI から）"""
+        """
+        総ページ数を自動検出（Kindle Cloud Reader UIから）
+
+        検出方法（優先順位順）:
+        1. ページインジケーター要素から取得 ("Page 1 of 258")
+        2. JavaScript経由でKindle Readerオブジェクトから取得
+        3. プログレスバーのaria-valuemaxから取得
+
+        Returns:
+            Optional[int]: 検出された総ページ数、失敗時はNone
+        """
+        import re
+
+        # 方法1: ページインジケーター ("Page 1 of 258" or "1 / 258")
         try:
-            # Kindle Cloud Readerのページ表示要素を検索
-            # 例: "123 / 456" のような表示
             wait = WebDriverWait(self.driver, 5)
 
-            # セレクタは実際のKindle Cloud Reader UIに合わせて調整が必要
-            page_indicator = wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "page-number"))
-            )
+            # Try multiple selectors for page indicator
+            selectors = [
+                (By.ID, "kr-page-indicator"),
+                (By.CLASS_NAME, "page-number"),
+                (By.CSS_SELECTOR, "[aria-label*='page']"),
+                (By.CSS_SELECTOR, ".page-info"),
+            ]
 
-            text = page_indicator.text  # 例: "1 / 456"
-            if "/" in text:
-                total = int(text.split("/")[1].strip())
-                return total
+            for by, selector in selectors:
+                try:
+                    page_indicator = wait.until(
+                        EC.presence_of_element_located((by, selector))
+                    )
+                    text = page_indicator.text
+                    logger.info(f"📊 Page indicator found: '{text}'")
 
-        except (TimeoutException, NoSuchElementException, ValueError):
-            pass
+                    # Match various formats: "Page 1 of 258", "1 / 258", "1/258", "ページ 1 / 258"
+                    patterns = [
+                        r'of\s+(\d+)',      # "of 258"
+                        r'/\s*(\d+)',       # "/ 258" or "/258"
+                        r'全\s*(\d+)',      # Japanese: "全258"
+                    ]
 
+                    for pattern in patterns:
+                        match = re.search(pattern, text)
+                        if match:
+                            total_pages = int(match.group(1))
+                            logger.info(f"✅ Total pages detected (indicator): {total_pages}")
+                            return total_pages
+
+                except (TimeoutException, NoSuchElementException):
+                    continue
+
+        except Exception as e:
+            logger.warning(f"⚠️ Page indicator detection failed: {e}")
+
+        # 方法2: JavaScript経由でKindle Readerオブジェクトから取得
+        try:
+            # Try various JavaScript methods to get page count
+            js_methods = [
+                "return window.KindleReader?.reader?.getNumberOfPages();",
+                "return window.KindleReader?.getNumberOfPages();",
+                "return document.querySelector('[aria-valuemax]')?.getAttribute('aria-valuemax');",
+            ]
+
+            for js_code in js_methods:
+                try:
+                    result = self.driver.execute_script(js_code)
+                    if result:
+                        total_pages = int(result)
+                        logger.info(f"✅ Total pages detected (JavaScript): {total_pages}")
+                        return total_pages
+                except Exception:
+                    continue
+
+        except Exception as e:
+            logger.warning(f"⚠️ JavaScript detection failed: {e}")
+
+        # 方法3: プログレスバーのaria-valuemaxから取得
+        try:
+            progress_selectors = [
+                (By.CSS_SELECTOR, "[role='progressbar']"),
+                (By.CSS_SELECTOR, "input[type='range']"),
+                (By.CSS_SELECTOR, ".progress-bar"),
+            ]
+
+            for by, selector in progress_selectors:
+                try:
+                    progress_element = self.driver.find_element(by, selector)
+                    max_value = progress_element.get_attribute("aria-valuemax")
+                    if max_value:
+                        total_pages = int(max_value)
+                        logger.info(f"✅ Total pages detected (progress bar): {total_pages}")
+                        return total_pages
+                except (NoSuchElementException, ValueError):
+                    continue
+
+        except Exception as e:
+            logger.warning(f"⚠️ Progress bar detection failed: {e}")
+
+        logger.warning("⚠️ Could not detect total pages from Kindle Cloud Reader")
         return None
 
     def _is_last_page(self) -> bool:

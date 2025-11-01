@@ -58,6 +58,10 @@ python-multipart==0.0.6  # FastAPI file upload
 # ==================== Configuration ====================
 python-dotenv==1.0.0
 
+# ==================== Data Processing & Export ====================
+pandas==2.1.3  # CSV/Excel data processing for download features
+openpyxl==3.1.5  # Excel file generation support
+
 # ==================== Utilities ====================
 python-dateutil==2.8.2
 pytz==2023.3

@@ -2,14 +2,17 @@
 Text Download Page - テキストダウンロード
 
 OCR結果をさまざまな形式（TXT, CSV, Excel）でダウンロードできるページ
+画像ファイル（全ページのスクリーンショット）をZIPでダウンロードできる機能も提供
 """
 import streamlit as st
 import sys
 import os
 import pandas as pd
 import io
+import zipfile
+from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # プロジェクトルートをパスに追加
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
@@ -125,33 +128,47 @@ def convert_to_csv(ocr_results: List[Dict[str, Any]]) -> str:
 
 
 def convert_to_excel(ocr_results: List[Dict[str, Any]], book_title: str) -> bytes:
-    """OCR結果をExcelに変換"""
-    df = pd.DataFrame([
-        {
-            "ページ番号": result.get("page_num", 0),
-            "テキスト": result.get("text", ""),
-            "信頼度": result.get("confidence", 0.0)
-        }
-        for result in ocr_results
-    ])
+    """
+    OCR結果をExcelに変換
 
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='OCR結果')
+    Requires: openpyxl package (pip install openpyxl)
+    """
+    try:
+        df = pd.DataFrame([
+            {
+                "ページ番号": result.get("page_num", 0),
+                "テキスト": result.get("text", ""),
+                "信頼度": result.get("confidence", 0.0)
+            }
+            for result in ocr_results
+        ])
 
-        # メタデータシート
-        metadata_df = pd.DataFrame({
-            "項目": ["書籍タイトル", "生成日時", "総ページ数", "平均信頼度"],
-            "値": [
-                book_title,
-                datetime.now().strftime('%Y年%m月%d日 %H:%M:%S'),
-                len(ocr_results),
-                f"{sum(r.get('confidence', 0.0) for r in ocr_results) / len(ocr_results):.2%}" if ocr_results else "N/A"
-            ]
-        })
-        metadata_df.to_excel(writer, index=False, sheet_name='メタデータ')
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='OCR結果')
 
-    return output.getvalue()
+            # メタデータシート
+            metadata_df = pd.DataFrame({
+                "項目": ["書籍タイトル", "生成日時", "総ページ数", "平均信頼度"],
+                "値": [
+                    book_title,
+                    datetime.now().strftime('%Y年%m月%d日 %H:%M:%S'),
+                    len(ocr_results),
+                    f"{sum(r.get('confidence', 0.0) for r in ocr_results) / len(ocr_results):.2%}" if ocr_results else "N/A"
+                ]
+            })
+            metadata_df.to_excel(writer, index=False, sheet_name='メタデータ')
+
+        return output.getvalue()
+    except ImportError as e:
+        logger.error(f"Excel変換エラー - openpyxlが見つかりません: {e}")
+        raise RuntimeError(
+            "Excelファイル生成に必要なopenpyxlパッケージがインストールされていません。\n"
+            "pip install openpyxl を実行してください。"
+        )
+    except Exception as e:
+        logger.error(f"Excel変換エラー: {e}", exc_info=True)
+        raise
 
 
 def convert_to_markdown(ocr_results: List[Dict[str, Any]], book_title: str) -> str:
@@ -183,17 +200,100 @@ def convert_to_markdown(ocr_results: List[Dict[str, Any]], book_title: str) -> s
     return "\n".join(lines)
 
 
+def create_image_zip(job_id: str, captures_base_dir: str = "./captures") -> Optional[bytes]:
+    """
+    指定されたジョブIDの画像ファイルをZIPに圧縮
+
+    Args:
+        job_id: ジョブID
+        captures_base_dir: capturesディレクトリのベースパス
+
+    Returns:
+        Optional[bytes]: ZIP圧縮されたバイトデータ、失敗時はNone
+    """
+    try:
+        # ジョブディレクトリのパス
+        job_dir = Path(captures_base_dir) / job_id
+
+        if not job_dir.exists():
+            logger.warning(f"ジョブディレクトリが存在しません: {job_dir}")
+            return None
+
+        # page_NNNN.png パターンの画像ファイルを取得
+        image_files = sorted(job_dir.glob("page_*.png"))
+
+        if not image_files:
+            logger.warning(f"画像ファイルが見つかりません: {job_dir}")
+            return None
+
+        # メモリ内でZIPファイルを作成
+        zip_buffer = io.BytesIO()
+
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for image_path in image_files:
+                # ZIPファイル内でのファイル名（ディレクトリ構造を保持しない）
+                arcname = image_path.name
+                zip_file.write(image_path, arcname=arcname)
+                logger.debug(f"ZIPに追加: {arcname}")
+
+        # バイトデータを取得
+        zip_bytes = zip_buffer.getvalue()
+        logger.info(f"ZIPファイル作成完了: {len(image_files)}ファイル, {len(zip_bytes) / 1024 / 1024:.2f} MB")
+
+        return zip_bytes
+
+    except Exception as e:
+        logger.error(f"ZIPファイル作成エラー: {e}", exc_info=True)
+        return None
+
+
+def get_zip_size_mb(zip_bytes: Optional[bytes]) -> float:
+    """
+    ZIPファイルのサイズをMB単位で取得
+
+    Args:
+        zip_bytes: ZIPファイルのバイトデータ
+
+    Returns:
+        float: ファイルサイズ（MB）
+    """
+    if not zip_bytes:
+        return 0.0
+    return len(zip_bytes) / 1024 / 1024
+
+
+def format_file_size(size_bytes: int) -> str:
+    """
+    ファイルサイズを読みやすい形式にフォーマット
+
+    Args:
+        size_bytes: ファイルサイズ（バイト）
+
+    Returns:
+        str: フォーマットされたファイルサイズ（例: "45.2 MB"）
+    """
+    if size_bytes < 1024:
+        return f"{size_bytes} B"
+    elif size_bytes < 1024 * 1024:
+        return f"{size_bytes / 1024:.2f} KB"
+    elif size_bytes < 1024 * 1024 * 1024:
+        return f"{size_bytes / 1024 / 1024:.2f} MB"
+    else:
+        return f"{size_bytes / 1024 / 1024 / 1024:.2f} GB"
+
+
 # ========================================
 # メイン画面
 # ========================================
 
 def main():
     # ヘッダー
-    st.markdown('<div class="download-header">📥 テキストダウンロード</div>', unsafe_allow_html=True)
+    st.markdown('<div class="download-header">📥 ダウンロード</div>', unsafe_allow_html=True)
 
     st.info(
-        "📄 **Text Download**: OCR処理が完了したジョブから、テキストをさまざまな形式でダウンロードできます。\n\n"
-        "対応形式: プレーンテキスト (TXT) | CSV | Excel (XLSX) | Markdown (MD)"
+        "📄 **Download Options**: OCR処理が完了したジョブから、画像またはテキストをダウンロードできます。\n\n"
+        "**画像ダウンロード**: 全ページのスクリーンショットをZIPファイルで取得\n\n"
+        "**テキストダウンロード**: OCR抽出テキストを各種形式（TXT/CSV/Excel/Markdown）で取得"
     )
 
     st.markdown("---")
@@ -206,12 +306,18 @@ def main():
         st.markdown("### ダウンロード手順")
         st.markdown(
             "1. ジョブを選択\n"
-            "2. ダウンロード形式を選択\n"
-            "3. ダウンロードボタンをクリック"
+            "2. ダウンロード種別を選択\n"
+            "3. 形式を選択（テキストの場合）\n"
+            "4. ダウンロードボタンをクリック"
         )
 
         st.markdown("---")
-        st.markdown("### 対応形式")
+        st.markdown("### ダウンロード種別")
+        st.markdown("🖼️ **画像**: スクリーンショット（ZIP）")
+        st.markdown("📄 **テキスト**: OCR抽出結果")
+
+        st.markdown("---")
+        st.markdown("### テキスト対応形式")
         st.markdown("📄 **TXT**: プレーンテキスト")
         st.markdown("📊 **CSV**: カンマ区切り")
         st.markdown("📈 **XLSX**: Excel形式")
@@ -314,109 +420,190 @@ def render_download_options(job_id: str):
                 f"**作成日時:** {format_timestamp(job_detail.get('created_at', ''))}"
             )
 
-            # ダウンロード形式選択
-            st.markdown("#### 📋 ダウンロード形式")
+            # ダウンロード種別選択（画像 or テキスト）
+            st.markdown("#### 📋 ダウンロード種別")
 
-            col1, col2 = st.columns([1, 1])
+            download_type = st.radio(
+                "ダウンロードする内容を選択してください",
+                ["🖼️ 画像ファイル（全ページのスクリーンショット）", "📄 文字起こしテキスト（OCR抽出結果）"],
+                help="画像ファイル: キャプチャした画像をZIPでダウンロード\n文字起こし: OCR抽出テキストを各種形式でダウンロード"
+            )
 
-            with col1:
+            st.markdown("---")
+
+            # 書籍タイトル入力
+            book_title = st.text_input(
+                "📚 書籍タイトル",
+                value=f"Kindle_OCR_{job_id[:8]}",
+                help="ダウンロードファイルに使用されるタイトル"
+            )
+
+            st.markdown("---")
+
+            # ========================================
+            # 画像ファイルダウンロード
+            # ========================================
+            if "🖼️ 画像ファイル" in download_type:
+                st.markdown("#### 🖼️ 画像ファイルダウンロード")
+
+                st.info(
+                    "📦 **ZIP形式でダウンロード**\n\n"
+                    f"• 全 {pages_captured} ページのスクリーンショット画像を含みます\n"
+                    "• ファイル形式: PNG\n"
+                    "• ファイル名: page_0001.png, page_0002.png, ..."
+                )
+
+                # ZIP作成
+                with st.spinner("📦 ZIPファイルを作成中..."):
+                    # capturesディレクトリの絶対パス
+                    captures_dir = os.path.abspath("./captures")
+                    zip_bytes = create_image_zip(job_id, captures_dir)
+
+                if zip_bytes is None:
+                    st.error("❌ 画像ファイルが見つかりませんでした。キャプチャが正常に完了しているか確認してください。")
+                    st.warning(f"💡 確認場所: `captures/{job_id}/`")
+                else:
+                    zip_size_mb = get_zip_size_mb(zip_bytes)
+
+                    # ダウンロードボタン
+                    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                    filename = f"{book_title}_images_{timestamp}.zip"
+
+                    st.download_button(
+                        label=f"📥 画像ファイルをダウンロード ({zip_size_mb:.2f} MB)",
+                        data=zip_bytes,
+                        file_name=filename,
+                        mime="application/zip",
+                        use_container_width=True,
+                        type="primary"
+                    )
+
+                    st.success(f"✅ ZIPファイル準備完了: {len(ocr_results)}ファイル、約 {zip_size_mb:.2f} MB")
+
+                    # 画像リスト表示
+                    with st.expander("📁 含まれる画像ファイル一覧", expanded=False):
+                        for i in range(1, pages_captured + 1):
+                            st.markdown(f"• `page_{i:04d}.png`")
+
+            # ========================================
+            # 文字起こしテキストダウンロード
+            # ========================================
+            elif "📄 文字起こしテキスト" in download_type:
+                st.markdown("#### 📄 文字起こしテキストダウンロード")
+
+                # テキスト形式選択
                 format_option = st.radio(
-                    "形式を選択",
+                    "📋 ファイル形式を選択",
                     ["📄 プレーンテキスト (TXT)", "📊 CSV", "📈 Excel (XLSX)", "📝 Markdown (MD)"],
                     index=0
                 )
 
-            with col2:
-                book_title = st.text_input(
-                    "書籍タイトル",
-                    value=f"Kindle_OCR_{job_id[:8]}",
-                    help="ダウンロードファイルに使用されるタイトル"
-                )
+                st.markdown("---")
 
-            st.markdown("---")
+                # プレビュー表示
+                st.markdown("#### 👀 プレビュー")
 
-            # プレビュー表示
-            st.markdown("#### 👀 プレビュー")
+                with st.expander("最初の3ページをプレビュー", expanded=False):
+                    preview_results = ocr_results[:3]
 
-            with st.expander("最初の3ページをプレビュー", expanded=False):
-                preview_results = ocr_results[:3]
+                    for result in preview_results:
+                        page_num = result.get("page_num", 0)
+                        text = result.get("text", "")
+                        confidence = result.get("confidence", 0.0)
 
-                for result in preview_results:
-                    page_num = result.get("page_num", 0)
-                    text = result.get("text", "")
-                    confidence = result.get("confidence", 0.0)
+                        st.markdown(f"**ページ {page_num}** (信頼度: {confidence:.2%})")
+                        st.text_area(
+                            f"page_{page_num}",
+                            value=text,
+                            height=150,
+                            disabled=True,
+                            label_visibility="collapsed"
+                        )
+                        st.markdown("---")
 
-                    st.markdown(f"**ページ {page_num}** (信頼度: {confidence:.2%})")
-                    st.text_area(
-                        f"page_{page_num}",
-                        value=text,
-                        height=150,
-                        disabled=True,
-                        label_visibility="collapsed"
-                    )
-                    st.markdown("---")
+                # ダウンロードボタン
+                st.markdown("#### 💾 ダウンロード")
 
-            # ダウンロードボタン
-            st.markdown("#### 💾 ダウンロード")
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                if "📄 プレーンテキスト" in format_option:
+                    try:
+                        text_content = convert_to_text(ocr_results, book_title)
+                        st.download_button(
+                            label="📥 TXTファイルをダウンロード",
+                            data=text_content,
+                            file_name=f"{book_title}_{timestamp}.txt",
+                            mime="text/plain",
+                            use_container_width=True,
+                            type="primary"
+                        )
 
-            if "📄 プレーンテキスト" in format_option:
-                text_content = convert_to_text(ocr_results, book_title)
-                st.download_button(
-                    label="📥 TXTファイルをダウンロード",
-                    data=text_content,
-                    file_name=f"{book_title}_{timestamp}.txt",
-                    mime="text/plain",
-                    use_container_width=True,
-                    type="primary"
-                )
+                        st.markdown(f"**ファイルサイズ:** 約 {len(text_content.encode('utf-8')) / 1024:.2f} KB")
+                    except Exception as e:
+                        st.error(f"❌ TXTファイル生成エラー: {str(e)}")
+                        logger.error(f"Text download error: {e}", exc_info=True)
 
-                st.markdown(f"**ファイルサイズ:** 約 {len(text_content.encode('utf-8')) / 1024:.2f} KB")
+                elif "📊 CSV" in format_option:
+                    try:
+                        csv_content = convert_to_csv(ocr_results)
+                        st.download_button(
+                            label="📥 CSVファイルをダウンロード",
+                            data=csv_content,
+                            file_name=f"{book_title}_{timestamp}.csv",
+                            mime="text/csv",
+                            use_container_width=True,
+                            type="primary"
+                        )
 
-            elif "📊 CSV" in format_option:
-                csv_content = convert_to_csv(ocr_results)
-                st.download_button(
-                    label="📥 CSVファイルをダウンロード",
-                    data=csv_content,
-                    file_name=f"{book_title}_{timestamp}.csv",
-                    mime="text/csv",
-                    use_container_width=True,
-                    type="primary"
-                )
+                        st.markdown(f"**ファイルサイズ:** 約 {len(csv_content.encode('utf-8')) / 1024:.2f} KB")
+                        st.markdown("**形式:** UTF-8 with BOM (Excelで文字化けしません)")
+                    except Exception as e:
+                        st.error(f"❌ CSVファイル生成エラー: {str(e)}")
+                        logger.error(f"CSV download error: {e}", exc_info=True)
 
-                st.markdown(f"**ファイルサイズ:** 約 {len(csv_content.encode('utf-8')) / 1024:.2f} KB")
-                st.markdown("**形式:** UTF-8 with BOM (Excelで文字化けしません)")
+                elif "📈 Excel" in format_option:
+                    try:
+                        excel_content = convert_to_excel(ocr_results, book_title)
+                        st.download_button(
+                            label="📥 Excelファイルをダウンロード",
+                            data=excel_content,
+                            file_name=f"{book_title}_{timestamp}.xlsx",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            use_container_width=True,
+                            type="primary"
+                        )
 
-            elif "📈 Excel" in format_option:
-                excel_content = convert_to_excel(ocr_results, book_title)
-                st.download_button(
-                    label="📥 Excelファイルをダウンロード",
-                    data=excel_content,
-                    file_name=f"{book_title}_{timestamp}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    use_container_width=True,
-                    type="primary"
-                )
+                        st.markdown(f"**ファイルサイズ:** 約 {len(excel_content) / 1024:.2f} KB")
+                        st.markdown("**シート:** OCR結果 + メタデータ")
+                    except RuntimeError as e:
+                        st.error(f"❌ Excelファイル生成エラー")
+                        st.error(str(e))
+                        st.info("💡 **解決方法**: `pip install openpyxl` を実行してください")
+                    except Exception as e:
+                        st.error(f"❌ 予期しないエラーが発生しました: {str(e)}")
+                        logger.error(f"Excel download error: {e}", exc_info=True)
 
-                st.markdown(f"**ファイルサイズ:** 約 {len(excel_content) / 1024:.2f} KB")
-                st.markdown("**シート:** OCR結果 + メタデータ")
+                elif "📝 Markdown" in format_option:
+                    try:
+                        markdown_content = convert_to_markdown(ocr_results, book_title)
+                        st.download_button(
+                            label="📥 Markdownファイルをダウンロード",
+                            data=markdown_content,
+                            file_name=f"{book_title}_{timestamp}.md",
+                            mime="text/markdown",
+                            use_container_width=True,
+                            type="primary"
+                        )
 
-            elif "📝 Markdown" in format_option:
-                markdown_content = convert_to_markdown(ocr_results, book_title)
-                st.download_button(
-                    label="📥 Markdownファイルをダウンロード",
-                    data=markdown_content,
-                    file_name=f"{book_title}_{timestamp}.md",
-                    mime="text/markdown",
-                    use_container_width=True,
-                    type="primary"
-                )
+                        st.markdown(f"**ファイルサイズ:** 約 {len(markdown_content.encode('utf-8')) / 1024:.2f} KB")
+                        st.markdown("**用途:** GitHub, Notion, Obsidian等に最適")
+                    except Exception as e:
+                        st.error(f"❌ Markdownファイル生成エラー: {str(e)}")
+                        logger.error(f"Markdown download error: {e}", exc_info=True)
 
-                st.markdown(f"**ファイルサイズ:** 約 {len(markdown_content.encode('utf-8')) / 1024:.2f} KB")
-                st.markdown("**用途:** GitHub, Notion, Obsidian等に最適")
-
-            # 統計情報
+            # ========================================
+            # 統計情報（共通）
+            # ========================================
             st.markdown("---")
             st.markdown("#### 📊 統計情報")
 
