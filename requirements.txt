@@ -33,7 +33,7 @@ langchain==0.0.340
 langchain-community==0.0.6
 langchain-anthropic==0.0.2
 langchain-openai==0.0.2
-sentence-transformers==2.2.2
+sentence-transformers==5.1.2
 faiss-cpu==1.7.4
 # GPU版を使う場合は faiss-cpu を faiss-gpu に変更
 
