@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, s
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import get_current_active_user
+from app.core.security import get_current_user_or_default
 from app.models.user import User
 from app.services.business_rag_service import get_business_rag_service, BusinessRAGService
 from app.schemas.business import (
@@ -49,7 +49,7 @@ async def upload_document(
     file: UploadFile = File(..., description="Document file to upload"),
     tags: Optional[str] = Form(None, description="Comma-separated tags"),
     auto_index: bool = Form(True, description="Automatically create vector index"),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     rag_service: BusinessRAGService = Depends(get_rag_service)
 ):
     """
@@ -137,7 +137,7 @@ async def upload_document(
 )
 async def query_business_kb(
     request: BusinessQueryRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     rag_service: BusinessRAGService = Depends(get_rag_service)
 ):
     """
@@ -194,7 +194,7 @@ async def list_documents(
     tags: Optional[str] = None,
     limit: int = 100,
     offset: int = 0,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     rag_service: BusinessRAGService = Depends(get_rag_service)
 ):
     """
@@ -245,7 +245,7 @@ async def list_documents(
 )
 async def delete_document(
     file_id: int,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     rag_service: BusinessRAGService = Depends(get_rag_service)
 ):
     """
@@ -297,7 +297,7 @@ async def delete_document(
 )
 async def reindex_document(
     file_id: int,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     rag_service: BusinessRAGService = Depends(get_rag_service)
 ):
     """
@@ -351,7 +351,7 @@ async def reindex_document(
 )
 async def get_document_stats(
     file_id: int,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     rag_service: BusinessRAGService = Depends(get_rag_service)
 ):
     """

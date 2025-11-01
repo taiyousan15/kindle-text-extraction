@@ -14,7 +14,7 @@ import logging
 import uuid
 
 from app.core.database import get_db
-from app.core.security import get_current_active_user
+from app.core.security import get_current_user_or_default
 from app.models import Job, OCRResult, User
 from app.schemas.ocr import OCRUploadResponse, JobResponse
 from app.services.rate_limiter import limiter, RateLimitConfig
@@ -110,7 +110,7 @@ async def upload_and_ocr(
     file: UploadFile = File(..., description="OCR処理する画像ファイル"),
     book_title: str = "Untitled",
     page_num: int = 1,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ) -> OCRUploadResponse:
     """
@@ -211,7 +211,7 @@ async def upload_and_ocr(
 async def get_job_status(
     request: Request,
     job_id: str,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ) -> JobResponse:
     """

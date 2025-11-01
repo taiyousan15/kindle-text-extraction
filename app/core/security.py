@@ -12,11 +12,12 @@ import logging
 from app.core.database import get_db
 from app.services.auth_service import auth_service
 from app.models.user import User
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Bearer トークン認証スキーム
-security = HTTPBearer()
+# Bearer トークン認証スキーム（auto_error=Falseで認証エラーを自動で発生させない）
+security = HTTPBearer(auto_error=False)
 
 
 async def get_current_user(
@@ -100,6 +101,54 @@ async def get_current_active_user(
         )
 
     return current_user
+
+
+async def get_current_user_or_default(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    db: Session = Depends(get_db)
+) -> User:
+    """
+    現在のユーザーを取得、または認証無効時はデフォルトユーザーを返す
+
+    個人使用モード（AUTH_ENABLED=false）の場合、
+    認証をスキップしてデフォルトユーザーを自動的に使用する。
+
+    Args:
+        credentials: HTTPベアラートークン（オプション）
+        db: データベースセッション
+
+    Returns:
+        User: 認証されたユーザー、または個人使用モードのデフォルトユーザー
+    """
+    # 個人使用モードの場合、デフォルトユーザーを返す
+    if not settings.AUTH_ENABLED:
+        # デフォルトユーザーを取得または作成
+        default_user = auth_service.get_user_by_email(db, email="personal@localhost")
+        if not default_user:
+            logger.info("Creating default user for personal use mode")
+            # パスワードハッシュ化をスキップし、直接ユーザーを作成
+            from app.models.user import User
+            default_user = User(
+                email="personal@localhost",
+                name="Personal User",
+                hashed_password="no-password-personal-use-only",
+                is_active=True
+            )
+            db.add(default_user)
+            db.commit()
+            db.refresh(default_user)
+        logger.debug("Personal use mode - using default user")
+        return default_user
+
+    # 認証有効時は通常の認証フローを使用
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return await get_current_active_user(await get_current_user(credentials, db))
 
 
 async def get_current_user_optional(

@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     AMAZON_PASSWORD: str = os.getenv("AMAZON_PASSWORD", "")
 
     # ================== JWT Authentication ==================
+    AUTH_ENABLED: bool = os.getenv("AUTH_ENABLED", "true").lower() == "true"
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production")
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "your-jwt-secret-key-change-this-in-production")
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")

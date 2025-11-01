@@ -12,7 +12,7 @@ import logging
 from datetime import datetime
 
 from app.core.database import get_db
-from app.core.security import get_current_active_user
+from app.core.security import get_current_user_or_default
 from app.models.knowledge import Knowledge
 from app.models.user import User
 from app.schemas.knowledge import (
@@ -63,7 +63,7 @@ router = APIRouter()
 )
 async def extract_knowledge(
     request: KnowledgeExtractRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -185,7 +185,7 @@ async def extract_knowledge(
 )
 async def get_knowledge(
     knowledge_id: int,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """ナレッジ取得エンドポイント"""
@@ -255,7 +255,7 @@ async def get_knowledge(
 )
 async def get_knowledge_by_book(
     book_title: str,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """書籍別ナレッジ取得エンドポイント"""
@@ -286,7 +286,7 @@ async def get_knowledge_by_book(
 async def export_knowledge(
     knowledge_id: int,
     request: KnowledgeExportRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """ナレッジエクスポートエンドポイント"""
@@ -388,7 +388,7 @@ Knowledge ID: {knowledge.id}
 )
 async def extract_entities(
     request: EntityExtractRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -472,7 +472,7 @@ async def extract_entities(
 )
 async def extract_relationships(
     request: RelationshipExtractRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -569,7 +569,7 @@ async def extract_relationships(
 )
 async def build_knowledge_graph(
     request: RelationshipExtractRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """

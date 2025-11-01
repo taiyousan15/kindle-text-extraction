@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 import logging
 
 from app.core.database import get_db
-from app.core.security import get_current_active_user
+from app.core.security import get_current_user_or_default
 from app.services.auth_service import auth_service
 from app.schemas.auth import (
     UserCreate,
@@ -227,7 +227,7 @@ async def refresh_token(
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user_info(
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user_or_default)
 ) -> UserResponse:
     """
     現在のユーザー情報を取得
@@ -244,7 +244,7 @@ async def get_current_user_info(
 
 @router.post("/logout", response_model=MessageResponse)
 async def logout(
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user_or_default)
 ) -> MessageResponse:
     """
     ログアウト
@@ -270,7 +270,7 @@ async def logout(
 @router.post("/change-password", response_model=MessageResponse)
 async def change_password(
     password_data: PasswordChange,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ) -> MessageResponse:
     """

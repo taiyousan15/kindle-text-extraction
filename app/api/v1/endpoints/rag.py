@@ -11,7 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File,
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import get_current_active_user
+from app.core.security import get_current_user_or_default
 from app.models.user import User
 from app.schemas.rag import (
     RAGQueryRequest,
@@ -42,7 +42,7 @@ router = APIRouter(prefix="/rag", tags=["RAG"])
 def rag_query(
     http_request: Request,
     request: RAGQueryRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -145,7 +145,7 @@ def rag_query(
 @router.post("/index", response_model=RAGIndexResponse)
 def rag_index(
     request: RAGIndexRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -255,7 +255,7 @@ async def rag_index_upload(
     tags: str = Form(default=""),
     chunk_size: int = Form(default=500),
     chunk_overlap: int = Form(default=50),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -338,7 +338,7 @@ async def rag_index_upload(
 @router.post("/search", response_model=RAGSearchResponse)
 def rag_search(
     request: RAGSearchRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -402,7 +402,7 @@ def rag_search(
 
 @router.get("/stats", response_model=VectorStoreStats)
 def get_vector_store_stats(
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """

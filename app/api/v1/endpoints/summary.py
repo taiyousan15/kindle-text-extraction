@@ -12,7 +12,7 @@ import logging
 from datetime import datetime
 
 from app.core.database import get_db
-from app.core.security import get_current_active_user
+from app.core.security import get_current_user_or_default
 from app.models import Job, OCRResult, Summary
 from app.models.user import User
 from app.schemas.summary import (
@@ -109,7 +109,7 @@ def get_text_from_job(db: Session, job_id: str, user_id: int) -> tuple[str, str]
 async def create_summary(
     http_request: Request,
     request: SummaryCreateRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -221,7 +221,7 @@ async def create_summary(
 )
 async def create_multilevel_summary(
     request: SummaryMultiLevelRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -374,7 +374,7 @@ async def create_multilevel_summary(
 )
 async def get_summary(
     summary_id: int,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -411,7 +411,7 @@ async def get_summary(
 )
 async def get_summaries_by_job(
     job_id: str,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -459,7 +459,7 @@ async def get_summaries_by_job(
 async def regenerate_summary(
     summary_id: int,
     request: SummaryRegenerateRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """
@@ -563,7 +563,7 @@ async def regenerate_summary(
 )
 async def delete_summary(
     summary_id: int,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ):
     """

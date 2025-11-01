@@ -11,7 +11,7 @@ import uuid
 import logging
 
 from app.core.database import get_db
-from app.core.security import get_current_active_user
+from app.core.security import get_current_user_or_default
 from app.models import Job, OCRResult
 from app.models.user import User
 from app.schemas.capture import (
@@ -32,7 +32,7 @@ router = APIRouter()
 @router.post("/start", response_model=CaptureStartResponse, status_code=status.HTTP_202_ACCEPTED)
 async def start_auto_capture(
     request: CaptureStartRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ) -> CaptureStartResponse:
     """
@@ -126,7 +126,7 @@ async def start_auto_capture(
 @router.get("/status/{job_id}", response_model=CaptureStatusResponse)
 async def get_capture_status(
     job_id: str,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ) -> CaptureStatusResponse:
     """
@@ -221,7 +221,7 @@ async def get_capture_status(
 @router.get("/jobs", response_model=List[CaptureStatusResponse])
 async def list_capture_jobs(
     limit: int = 10,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     db: Session = Depends(get_db)
 ) -> List[CaptureStatusResponse]:
     """

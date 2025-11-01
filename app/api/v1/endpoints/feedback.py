@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import get_current_active_user
+from app.core.security import get_current_user_or_default
 from app.models.user import User
 from app.services.feedback_service import get_feedback_service, FeedbackService
 from app.schemas.feedback import (
@@ -48,7 +48,7 @@ def get_service(db: Session = Depends(get_db)) -> FeedbackService:
 )
 async def submit_feedback(
     request: FeedbackSubmitRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     service: FeedbackService = Depends(get_service)
 ):
     """
@@ -109,7 +109,7 @@ async def submit_feedback(
 )
 async def get_feedback_stats(
     days: int = 30,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     service: FeedbackService = Depends(get_service)
 ):
     """
@@ -161,7 +161,7 @@ async def list_feedbacks(
     rating: Optional[int] = None,
     limit: int = 100,
     offset: int = 0,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     service: FeedbackService = Depends(get_service)
 ):
     """
@@ -214,7 +214,7 @@ async def list_feedbacks(
 )
 async def trigger_retraining(
     request: RetrainingTriggerRequest,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     service: FeedbackService = Depends(get_service)
 ):
     """
@@ -276,7 +276,7 @@ async def trigger_retraining(
 )
 async def get_learning_insights(
     days: int = 30,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user_or_default),
     service: FeedbackService = Depends(get_service)
 ):
     """
