@@ -1,0 +1,286 @@
+# ==========================================================
+#  Self-Refine Agent System (for Kindle OCR Development)
+#  Author: Matsumoto Toshihiko
+#  Version: 1.0
+#  Purpose: 開発中のエラーを自動検出・分析・修正する開発支援エージェント
+# ==========================================================
+
+agent:
+  name: "DevErrorRefineAgent"
+  version: "1.0"
+  description: >
+    開発中のエラー(テスト失敗、Lintエラー、実行時エラー等)を
+    自動検出し、コード修正案を生成・検証・適用する開発支援AIエージェント。
+  objective: >
+    エラーを早期発見し、自動修正することで開発速度を向上させる。
+
+# ----------------------------------------------------------
+# 🧭 エージェント構成
+# ----------------------------------------------------------
+
+modules:
+  - id: error_detector
+    name: "ErrorDetector"
+    role: "エラーを検出し、詳細情報を収集する"
+    model: "claude-sonnet-4"
+    instruction: |
+      あなたはエラー検出の専門家です。
+      以下のソースから情報を収集してください:
+
+      1. pytest実行結果 (test_*.py)
+      2. mypy型チェック結果
+      3. flake8 Lint結果
+      4. 実行時エラーログ
+
+      出力フォーマット:
+      - エラー種別 (test/type/lint/runtime)
+      - ファイルパス:行番号
+      - エラーメッセージ
+      - スタックトレース
+      - 関連コード抜粋
+
+  - id: root_cause_analyzer
+    name: "RootCauseAnalyzer"
+    role: "エラーの根本原因を分析する"
+    model: "claude-sonnet-4-thinking"
+    instruction: |
+      あなたは根本原因分析の専門家です。
+      エラー情報をもとに、以下を分析してください:
+
+      1. エラーの直接原因
+      2. 根本原因 (設計・実装・依存関係)
+      3. 影響範囲 (他の機能への波及)
+      4. 緊急度 (Critical/High/Medium/Low)
+
+      出力フォーマット:
+      - 原因分析レポート (マークダウン形式)
+      - 修正優先度
+      - 修正難易度
+
+  - id: code_fixer
+    name: "CodeFixer"
+    role: "修正コードを生成する"
+    model: "claude-sonnet-4"
+    instruction: |
+      あなたはコード修正の専門家です。
+      根本原因分析をもとに、修正コードを生成してください。
+
+      ルール:
+      - 既存のコードスタイルを維持
+      - 型ヒントを必ず付ける
+      - docstringを更新
+      - テストコードも修正
+
+      出力フォーマット:
+      - 修正前コード (diff形式)
+      - 修正後コード (完全版)
+      - 修正理由
+      - 修正箇所の説明
+
+  - id: test_validator
+    name: "TestValidator"
+    role: "修正コードをテスト実行して検証する"
+    model: "claude-sonnet-4"
+    instruction: |
+      あなたはテスト検証の専門家です。
+      修正コードを以下の手順で検証してください:
+
+      1. 単体テスト実行 (pytest)
+      2. 型チェック (mypy)
+      3. Lintチェック (flake8)
+      4. 統合テスト実行
+
+      出力フォーマット:
+      - テスト結果 (pass/fail)
+      - カバレッジ (修正前 vs 修正後)
+      - 新たに発生したエラー
+      - 品質スコア (0-1)
+
+  - id: quality_evaluator
+    name: "QualityEvaluator"
+    role: "修正コードの品質を総合評価する"
+    model: "claude-sonnet-4"
+    instruction: |
+      あなたはコード品質評価の専門家です。
+      以下の指標で修正コードを評価してください:
+
+      指標:
+        - Correctness (正確性): テスト成功率
+        - Maintainability (保守性): 複雑度、可読性
+        - Performance (性能): 実行速度、メモリ使用量
+        - Security (セキュリティ): 脆弱性チェック
+        - Compatibility (互換性): 既存機能への影響
+
+      各項目を0〜1でスコア付けし、平均スコアを算出。
+
+      出力フォーマット:
+      - 各指標のスコア
+      - 平均スコア
+      - 改善提案
+      - 承認可否 (accept/reject/revise)
+
+# ----------------------------------------------------------
+# 🔁 制御フロー
+# ----------------------------------------------------------
+
+workflow:
+  entry: error_detector
+
+  steps:
+    - from: error_detector
+      to: root_cause_analyzer
+
+    - from: root_cause_analyzer
+      to: code_fixer
+
+    - from: code_fixer
+      to: test_validator
+
+    - from: test_validator
+      to: quality_evaluator
+
+    - from: quality_evaluator
+      to: code_fixer
+      condition: "quality_score < 0.85"
+
+  loop_condition:
+    metric: "quality_evaluator.average_score"
+    threshold: 0.85
+    max_iterations: 3
+
+  exit: quality_evaluator
+
+# ----------------------------------------------------------
+# 🧮 評価スキーマ
+# ----------------------------------------------------------
+
+schema:
+  error_info:
+    type: object
+    properties:
+      error_type: string
+      file_path: string
+      line_number: integer
+      message: string
+      stack_trace: string
+      code_snippet: string
+
+  quality_score:
+    type: object
+    properties:
+      correctness: float
+      maintainability: float
+      performance: float
+      security: float
+      compatibility: float
+      average_score: float
+      recommendation: string
+
+# ----------------------------------------------------------
+# 📂 記録設定
+# ----------------------------------------------------------
+
+memory:
+  save_history: true
+  format: "json"
+  output_path: "./logs/error_fix_history.json"
+  fields:
+    - timestamp
+    - error_type
+    - file_path
+    - iteration
+    - quality_score
+    - fix_applied
+    - test_result
+
+# ----------------------------------------------------------
+# 🔧 統合設定
+# ----------------------------------------------------------
+
+integration:
+  # GitHub Actions連携
+  github_actions:
+    enabled: true
+    trigger_on:
+      - test_failure
+      - lint_error
+      - type_error
+    create_pr: true
+    pr_title_template: "🤖 Auto-fix: {error_type} in {file_path}"
+
+  # Slack通知
+  slack:
+    enabled: true
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    notify_on:
+      - fix_started
+      - fix_completed
+      - fix_failed
+
+  # ローカル開発環境
+  local:
+    enabled: true
+    watch_files:
+      - "app/**/*.py"
+      - "tests/**/*.py"
+    auto_apply_fixes: false  # 確認後に手動適用
+    backup_original: true
+
+# ----------------------------------------------------------
+# 🎯 エラー種別ごとの戦略
+# ----------------------------------------------------------
+
+error_strategies:
+  test_failure:
+    priority: high
+    auto_fix: true
+    max_attempts: 3
+    notify: true
+
+  type_error:
+    priority: medium
+    auto_fix: true
+    max_attempts: 2
+    notify: false
+
+  lint_error:
+    priority: low
+    auto_fix: true
+    max_attempts: 1
+    notify: false
+
+  runtime_error:
+    priority: critical
+    auto_fix: false  # 手動確認必須
+    max_attempts: 5
+    notify: true
+
+  import_error:
+    priority: high
+    auto_fix: true
+    max_attempts: 2
+    notify: true
+
+# ----------------------------------------------------------
+# 🧪 起動用プロンプト例
+# ----------------------------------------------------------
+
+prompt_example: |
+  🤖 DevErrorRefineAgent 起動
+
+  【検出されたエラー】
+  - ファイル: app/services/capture/selenium_capture.py:315
+  - エラー種別: test_failure
+  - メッセージ: AssertionError: パスキー検出が失敗しました
+
+  【自動修正フロー】
+  1. 根本原因分析中...
+  2. 修正コード生成中...
+  3. テスト実行中...
+  4. 品質評価中...
+
+  【結果】
+  - 修正完了 ✅
+  - 品質スコア: 0.92
+  - テスト: 100% pass
+  - 修正ファイル: selenium_capture.py (バックアップ保存済み)

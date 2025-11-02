@@ -17,3 +17,23 @@ build/
 
 # System files
 .DS_Store
+
+# Temporary test files
+-s
+2
+sleep
+curl
+fix_stuck_job.py
+verify_fix.sh
+
+# Amazon cookies
+.amazon_cookies/
+
+# Python cache
+__pycache__/
+*.pyc
+app/ui/pages/__pycache__/
+
+# Local captures
+captures/
+
