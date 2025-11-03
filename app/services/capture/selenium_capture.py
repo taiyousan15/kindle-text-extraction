@@ -19,6 +19,7 @@ from typing import List, Optional, Callable
 from dataclasses import dataclass
 import logging
 import base64
+import hashlib  # FIX: Added for screenshot hash calculation
 
 logger = logging.getLogger(__name__)
 
@@ -492,6 +493,19 @@ class SeleniumKindleCapture:
             logger.error(f"❌ Amazonログインエラー: {e}", exc_info=True)
             return False
 
+    def _calculate_screenshot_hash(self) -> str:
+        """
+        現在表示されているページのスクリーンショットハッシュを計算
+
+        FIX: Page duplicate detection using MD5 hash
+        REASON: Detects when page turning fails and same page is captured repeatedly
+
+        Returns:
+            str: MD5ハッシュ値
+        """
+        screenshot_bytes = self.driver.get_screenshot_as_png()
+        return hashlib.md5(screenshot_bytes).hexdigest()
+
     def capture_all_pages(
         self,
         progress_callback: Optional[Callable[[int, int], None]] = None,
@@ -535,7 +549,12 @@ class SeleniumKindleCapture:
 
             logger.info(f"🚀 キャプチャ開始（最大{max_pages}ページ）")
 
+            # FIX: Initialize duplicate detection variables
+            # REASON: Track consecutive identical pages to detect page turning failures
             page = 1
+            consecutive_same_pages = 0  # 連続同一ページカウンター
+            previous_hash = None
+
             while page <= max_pages:
                 # 停止チェック
                 if stop_check and stop_check():
@@ -546,6 +565,39 @@ class SeleniumKindleCapture:
                 screenshot_path = self.output_dir / f"page_{page:04d}.png"
                 self.driver.save_screenshot(str(screenshot_path))
                 image_paths.append(screenshot_path)
+
+                # FIX: Calculate page hash for duplicate detection
+                # REASON: Detect if the same page is being captured repeatedly
+                current_hash = self._calculate_screenshot_hash()
+
+                # FIX: Check if current page is identical to previous page
+                # REASON: Early detection of page turning failures
+                if previous_hash and current_hash == previous_hash:
+                    consecutive_same_pages += 1
+                    logger.warning(
+                        f"⚠️ 警告: ページ {page} が前ページと同一です "
+                        f"(連続{consecutive_same_pages}回目)"
+                    )
+
+                    # FIX: Stop capture if 3 consecutive identical pages detected
+                    # REASON: Prevent wasting resources on duplicate captures
+                    if consecutive_same_pages >= 3:
+                        logger.error(
+                            f"❌ エラー: 3回連続で同一ページが検出されました。"
+                            f"ページめくりが機能していない可能性があります。"
+                        )
+                        return SeleniumCaptureResult(
+                            success=False,
+                            captured_pages=len(image_paths),
+                            image_paths=image_paths,
+                            error_message="ページめくり失敗: 3回連続で同一ページ検出"
+                        )
+                else:
+                    # FIX: Reset counter when page changes successfully
+                    # REASON: Only consecutive duplicates indicate a problem
+                    consecutive_same_pages = 0
+
+                previous_hash = current_hash
 
                 logger.info(f"📸 ページ {page}/{max_pages} キャプチャ完了")
 
@@ -560,8 +612,33 @@ class SeleniumKindleCapture:
 
                 # 次のページへ
                 if page < max_pages:
-                    self._turn_page()
-                    time.sleep(2)  # ページ読み込み待機
+                    # FIX: Add retry mechanism for page turning with verification
+                    # REASON: Ensure page actually changes before continuing
+                    turn_success = False
+                    for retry in range(3):  # 最大3回リトライ
+                        self._turn_page()
+                        time.sleep(2)  # ページ読み込み待機
+
+                        # FIX: Verify page changed after turning
+                        # REASON: Immediate detection of failed page turn
+                        new_hash = self._calculate_screenshot_hash()
+                        if new_hash != current_hash:
+                            turn_success = True
+                            break
+                        else:
+                            logger.warning(f"⚠️ ページめくり失敗 (リトライ {retry + 1}/3)")
+                            time.sleep(1)  # 追加待機
+
+                    if not turn_success:
+                        logger.error(f"❌ ページめくりが3回失敗しました (ページ {page})")
+                        # FIX: Stop capture after repeated page turn failures
+                        # REASON: Continuing would only create more duplicates
+                        return SeleniumCaptureResult(
+                            success=False,
+                            captured_pages=len(image_paths),
+                            image_paths=image_paths,
+                            error_message=f"ページめくり失敗: ページ {page} で3回連続失敗"
+                        )
 
                 page += 1
 
