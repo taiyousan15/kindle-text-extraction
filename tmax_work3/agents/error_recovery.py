@@ -34,6 +34,11 @@ try:
 except ImportError:
     Anthropic = None
 
+try:
+    from tmax_work3.agents.error_prompt_generator import ErrorPromptGenerator
+except ImportError:
+    ErrorPromptGenerator = None
+
 
 class ErrorRecoveryAgent:
     """
@@ -58,6 +63,23 @@ class ErrorRecoveryAgent:
         if Anthropic and os.getenv("ANTHROPIC_API_KEY"):
             self.claude_client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
+        # ErrorPromptGenerator初期化
+        self.prompt_generator = None
+        if ErrorPromptGenerator:
+            try:
+                self.prompt_generator = ErrorPromptGenerator()
+                self.blackboard.log(
+                    "✅ ErrorPromptGenerator initialized",
+                    level="INFO",
+                    agent=AgentType.ERROR_RECOVERY
+                )
+            except Exception as e:
+                self.blackboard.log(
+                    f"⚠️ ErrorPromptGenerator initialization failed: {e}",
+                    level="WARNING",
+                    agent=AgentType.ERROR_RECOVERY
+                )
+
         # エージェント登録
         self.blackboard.register_agent(
             AgentType.ERROR_RECOVERY,
@@ -78,14 +100,128 @@ class ErrorRecoveryAgent:
         if self.error_patterns_path.exists():
             return json.loads(self.error_patterns_path.read_text())
 
-        # デフォルトパターン
+        # デフォルトパターン（エラー解決プロンプト集に基づく）
         default_patterns = {
+            # =================================================================
+            # 1. ログイン機能のエラー
+            # =================================================================
+            "login_bot_detection": {
+                "pattern": r"bot.*detect|captcha|ログイン.*失敗|login.*fail",
+                "description": "Amazon login failure (Bot detection, CAPTCHA)",
+                "fix_type": "enhance_login_with_human_behavior",
+                "fix_content": "Add undetected-chromedriver, human-like delays, fallback selectors",
+                "severity": "high",
+                "category": "login",
+                "occurrences": 0
+            },
+            "login_2fa_stuck": {
+                "pattern": r"2fa|otp|二段階認証|パスキー",
+                "description": "Stuck at 2FA/OTP/Passkey screen",
+                "fix_type": "interactive_2fa_wait",
+                "fix_content": "Add interactive prompt and smart wait logic",
+                "severity": "medium",
+                "category": "login",
+                "occurrences": 0
+            },
+
+            # =================================================================
+            # 2. ページめくり機能のエラー
+            # =================================================================
+            "page_turn_stuck": {
+                "pattern": r"ページがめくられ|page.*turn.*fail|ページめくり.*失敗|同一ページ検出|ページ送り.*失敗",
+                "description": "Kindle page turn stuck or repeating same page",
+                "fix_type": "multi_stage_page_turn",
+                "fix_content": "MD5 hash verification + ActionChains + iframe reload",
+                "severity": "high",
+                "category": "page_turn",
+                "occurrences": 0
+            },
+            "page_turn_book_specific": {
+                "pattern": r"特定.*書籍|manga|雑誌|magazine",
+                "description": "Page turn fails for specific book types (manga, magazine)",
+                "fix_type": "adaptive_page_turn_strategy",
+                "fix_content": "Auto-detect book type and apply optimal strategy",
+                "severity": "medium",
+                "category": "page_turn",
+                "occurrences": 0
+            },
+
+            # =================================================================
+            # 3. OCR・テキスト抽出のエラー
+            # =================================================================
+            "ocr_low_accuracy": {
+                "pattern": r"ocr.*精度|認識精度|accuracy.*low|テキスト.*抽出.*失敗",
+                "description": "OCR recognition accuracy below target",
+                "fix_type": "enhance_ocr_preprocessing",
+                "fix_content": "CLAHE, adaptive threshold, multi-OCR engine ensemble",
+                "severity": "high",
+                "category": "ocr",
+                "occurrences": 0
+            },
+            "ocr_header_footer_contamination": {
+                "pattern": r"ヘッダー|フッター|header|footer|ページ番号.*混入",
+                "description": "Header/footer/page numbers contaminating OCR text",
+                "fix_type": "mask_header_footer_regions",
+                "fix_content": "OpenCV region detection + masking + regex filtering",
+                "severity": "medium",
+                "category": "ocr",
+                "occurrences": 0
+            },
+
+            # =================================================================
+            # 4. 文章生成のエラー
+            # =================================================================
+            "text_generation_low_quality": {
+                "pattern": r"生成.*品質|文章.*質|generation.*quality|不自然.*表現",
+                "description": "LLM generated text quality below expectations",
+                "fix_type": "enhance_llm_prompts",
+                "fix_content": "Chain-of-Thought, Few-shot examples, quality scoring loop",
+                "severity": "medium",
+                "category": "text_generation",
+                "occurrences": 0
+            },
+            "rag_irrelevant_results": {
+                "pattern": r"rag.*関連性|irrelevant|無関係.*情報|検索.*失敗",
+                "description": "RAG retrieves irrelevant information",
+                "fix_type": "hybrid_search_with_reranking",
+                "fix_content": "BM25 + vector search + Cross-Encoder reranking",
+                "severity": "medium",
+                "category": "text_generation",
+                "occurrences": 0
+            },
+
+            # =================================================================
+            # 5. インフラ・パフォーマンスの問題
+            # =================================================================
+            "application_crash": {
+                "pattern": r"crash|クラッシュ|起動.*失敗|segmentation.*fault",
+                "description": "Application crashes or fails to start",
+                "fix_type": "add_error_handling_and_healthcheck",
+                "fix_content": "Try-except blocks, graceful shutdown, health monitoring",
+                "severity": "critical",
+                "category": "infrastructure",
+                "occurrences": 0
+            },
+            "memory_leak": {
+                "pattern": r"memory.*leak|メモリ.*増大|out.*of.*memory",
+                "description": "Memory usage increases over time",
+                "fix_type": "optimize_memory_management",
+                "fix_content": "Stream processing, explicit gc.collect(), resource cleanup",
+                "severity": "high",
+                "category": "infrastructure",
+                "occurrences": 0
+            },
+
+            # =================================================================
+            # レガシーパターン（互換性のため保持）
+            # =================================================================
             "browser_extension_interference": {
                 "pattern": r"Cannot redefine property: ethereum",
                 "description": "Browser extension (MetaMask, Pocket Universe) interference",
                 "fix_type": "add_chrome_flag",
                 "fix_content": "--disable-extensions",
                 "severity": "high",
+                "category": "infrastructure",
                 "occurrences": 0
             },
             "kindle_terms_popup": {
@@ -94,14 +230,7 @@ class ErrorRecoveryAgent:
                 "fix_type": "auto_dismiss_popup",
                 "fix_content": "XPath selector strategy",
                 "severity": "medium",
-                "occurrences": 0
-            },
-            "page_turn_failure": {
-                "pattern": r"ページがめくられ|page.*turn.*fail",
-                "description": "Kindle page turn failure",
-                "fix_type": "retry_with_wait",
-                "fix_content": "Add explicit wait and retry logic",
-                "severity": "high",
+                "category": "login",
                 "occurrences": 0
             },
             "database_connection": {
@@ -110,6 +239,7 @@ class ErrorRecoveryAgent:
                 "fix_type": "reconnect",
                 "fix_content": "Retry with exponential backoff",
                 "severity": "critical",
+                "category": "infrastructure",
                 "occurrences": 0
             },
             "api_timeout": {
@@ -118,6 +248,7 @@ class ErrorRecoveryAgent:
                 "fix_type": "increase_timeout",
                 "fix_content": "Increase timeout from 30s to 60s",
                 "severity": "medium",
+                "category": "infrastructure",
                 "occurrences": 0
             }
         }
@@ -243,7 +374,24 @@ class ErrorRecoveryAgent:
     def _analyze_with_claude(self, error_log: str, context: Optional[str]) -> Dict:
         """Claude APIでエラーを分析"""
 
-        prompt = f"""エラーログを分析して、以下の情報を提供してください:
+        # ErrorPromptGeneratorを使用して最適なプロンプトを生成
+        if self.prompt_generator:
+            error_info = {
+                "error_message": error_log,
+                "timestamp": datetime.now().isoformat(),
+                "log": context or "",
+                "file_path": ""
+            }
+            prompt = self.prompt_generator.generate_prompt(error_info)
+
+            self.blackboard.log(
+                "📝 Generated specialized prompt using ErrorPromptGenerator",
+                level="INFO",
+                agent=AgentType.ERROR_RECOVERY
+            )
+        else:
+            # フォールバック: 基本プロンプト
+            prompt = f"""エラーログを分析して、以下の情報を提供してください:
 
 エラーログ:
 {error_log}
