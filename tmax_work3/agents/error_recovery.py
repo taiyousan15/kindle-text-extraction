@@ -341,6 +341,78 @@ for attempt in range(max_retries):
 """
             return True, fix_code
 
+        elif fix_type == "enhance_page_turn":
+            fix_code = """
+# FIX: Enhanced page turning with multiple strategies and verification
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def turn_page_enhanced(driver, max_retries=5):
+    \"\"\"Enhanced page turning with verification\"\"\"
+    import hashlib
+    import time
+
+    # Get current page hash before turning
+    try:
+        current_html = driver.find_element(By.TAG_NAME, "body").get_attribute('innerHTML')
+        current_hash = hashlib.md5(current_html.encode()).hexdigest()
+    except:
+        current_hash = None
+
+    for attempt in range(max_retries):
+        try:
+            # Strategy 1: JavaScript click on page turn area (most reliable)
+            js_selectors = [
+                "document.querySelector('#kindleReader_pageTurnAreaRight')?.click()",
+                "document.querySelector('.navBar-button-next')?.click()",
+                "document.querySelector('[aria-label=\"Next Page\"]')?.click()",
+                "document.querySelector('[aria-label=\"次のページ\"]')?.click()",
+                "document.querySelector('.kr-right-pageTurn')?.click()",
+            ]
+
+            for js_code in js_selectors:
+                result = driver.execute_script(js_code)
+                if result is not False:
+                    time.sleep(0.5)  # Wait for animation
+                    break
+
+            # Strategy 2: ActionChains with proper focus
+            if attempt > 0:
+                actions = ActionChains(driver)
+                body = driver.find_element(By.TAG_NAME, "body")
+                actions.move_to_element(body).click().send_keys(Keys.ARROW_RIGHT).perform()
+                time.sleep(0.5)
+
+            # Verify page changed
+            if current_hash:
+                time.sleep(1)  # Wait for page transition
+                new_html = driver.find_element(By.TAG_NAME, "body").get_attribute('innerHTML')
+                new_hash = hashlib.md5(new_html.encode()).hexdigest()
+
+                if new_hash != current_hash:
+                    return True  # Success!
+
+            # Strategy 3: Force reload area if still same page
+            if attempt > 2:
+                driver.execute_script(\"\"\"
+                    var iframe = document.querySelector('iframe#KindleReaderIFrame');
+                    if (iframe) {
+                        iframe.contentWindow.location.reload();
+                    }
+                \"\"\")
+                time.sleep(2)
+
+        except Exception as e:
+            if attempt < max_retries - 1:
+                time.sleep(1)
+                continue
+            raise
+
+    return False  # Failed after all retries
+"""
+            return True, fix_code
+
         elif fix_type == "reconnect":
             fix_code = """
 # FIX: Retry database connection with exponential backoff

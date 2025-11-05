@@ -1146,51 +1146,100 @@ class SeleniumKindleCapture:
         """
         次のページへ（複数の方法を試行）
 
-        FIX: Improved page turning with multiple fallback strategies
-        REASON: Single arrow key method was unreliable due to focus/extension issues
+        FIX: Enhanced page turning with verification (Error Recovery Agent recommended)
+        REASON: Previous methods unreliable - need page change verification
 
         Strategies (in order):
-        1. JavaScript click on next page button (most reliable)
-        2. Arrow key to body element (original method)
-        3. Arrow key with explicit focus (fallback)
+        1. JavaScript click on page turn area with verification (most reliable)
+        2. ActionChains with proper focus (fallback)
+        3. Force reload iframe (emergency fallback)
         """
+        import hashlib
+        from selenium.webdriver.common.action_chains import ActionChains
+
+        # Get current page hash before turning
         try:
-            # Strategy 1: Try JavaScript click on next page button (most reliable)
-            # Kindle Cloud Reader uses various selectors for the next button
-            js_click_selectors = [
-                "document.querySelector('.navBar-button-next')?.click()",
-                "document.querySelector('[aria-label=\"Next Page\"]')?.click()",
-                "document.querySelector('[aria-label=\"次のページ\"]')?.click()",
-                "document.querySelector('#kindleReader_pageTurnAreaRight')?.click()",
-                "document.querySelector('.kr-right-pageTurn')?.click()",
-            ]
+            current_html = self.driver.find_element(By.TAG_NAME, "body").get_attribute('innerHTML')
+            current_hash = hashlib.md5(current_html.encode()).hexdigest()[:8]
+        except:
+            current_hash = None
 
-            for js_code in js_click_selectors:
-                try:
-                    result = self.driver.execute_script(js_code)
-                    if result is not False:  # Click succeeded
-                        logger.debug("⏭️ ページ送り: JavaScript click")
-                        return
-                except Exception:
-                    continue
-
-            # Strategy 2: Original arrow key method
-            body = self.driver.find_element(By.TAG_NAME, "body")
-            body.send_keys(Keys.ARROW_RIGHT)
-            logger.debug("⏭️ ページ送り: 右矢印キー")
-
-        except Exception as e:
-            # Strategy 3: Fallback - try to focus explicitly then send key
-            logger.warning(f"⚠️ ページ送りエラー、フォールバック試行: {e}")
+        max_retries = 5
+        for attempt in range(max_retries):
             try:
-                # Focus on the reader container
-                self.driver.execute_script("document.activeElement.blur(); document.body.focus();")
-                body = self.driver.find_element(By.TAG_NAME, "body")
-                body.send_keys(Keys.ARROW_RIGHT)
-                logger.debug("⏭️ ページ送り: フォーカス後の右矢印キー")
-            except Exception as fallback_error:
-                logger.error(f"❌ ページ送り完全失敗: {fallback_error}")
+                # Strategy 1: JavaScript click on page turn area (most reliable)
+                js_click_selectors = [
+                    "document.querySelector('#kindleReader_pageTurnAreaRight')?.click()",
+                    "document.querySelector('.navBar-button-next')?.click()",
+                    "document.querySelector('[aria-label=\"Next Page\"]')?.click()",
+                    "document.querySelector('[aria-label=\"次のページ\"]')?.click()",
+                    "document.querySelector('.kr-right-pageTurn')?.click()",
+                ]
+
+                for js_code in js_click_selectors:
+                    try:
+                        result = self.driver.execute_script(js_code)
+                        if result is not False:
+                            time.sleep(0.5)  # Wait for page turn animation
+                            logger.debug(f"⏭️ ページ送り: JavaScript click (試行 {attempt + 1}/{max_retries})")
+                            break
+                    except Exception:
+                        continue
+
+                # Strategy 2: ActionChains with proper focus (if JS click didn't work)
+                if attempt > 0:
+                    try:
+                        actions = ActionChains(self.driver)
+                        body = self.driver.find_element(By.TAG_NAME, "body")
+                        actions.move_to_element(body).click().send_keys(Keys.ARROW_RIGHT).perform()
+                        time.sleep(0.5)
+                        logger.debug(f"⏭️ ページ送り: ActionChains (試行 {attempt + 1}/{max_retries})")
+                    except Exception:
+                        pass
+
+                # Verify page changed
+                if current_hash:
+                    time.sleep(1)  # Wait for page transition
+                    try:
+                        new_html = self.driver.find_element(By.TAG_NAME, "body").get_attribute('innerHTML')
+                        new_hash = hashlib.md5(new_html.encode()).hexdigest()[:8]
+
+                        if new_hash != current_hash:
+                            logger.debug(f"✅ ページ変更確認: {current_hash} → {new_hash}")
+                            return  # Success!
+                        else:
+                            logger.warning(f"⚠️ ページ未変更 (試行 {attempt + 1}/{max_retries}): hash={current_hash}")
+                    except Exception as e:
+                        logger.warning(f"⚠️ ページ変更検証失敗: {e}")
+
+                # Strategy 3: Force reload iframe if still same page (emergency fallback)
+                if attempt > 2:
+                    try:
+                        logger.warning("🔄 iframe強制リロード試行...")
+                        self.driver.execute_script("""
+                            var iframe = document.querySelector('iframe#KindleReaderIFrame');
+                            if (iframe) {
+                                iframe.contentWindow.location.reload();
+                            }
+                        """)
+                        time.sleep(2)
+                    except Exception as e:
+                        logger.warning(f"⚠️ iframe リロード失敗: {e}")
+
+                # Wait before retry
+                if attempt < max_retries - 1:
+                    time.sleep(1)
+
+            except Exception as e:
+                logger.error(f"❌ ページ送りエラー (試行 {attempt + 1}/{max_retries}): {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(1)
+                    continue
                 raise
+
+        # If we get here, all retries failed
+        logger.error(f"❌ ページ送り完全失敗: {max_retries}回すべて失敗")
+        raise Exception(f"Page turn failed after {max_retries} attempts")
 
     def close(self):
         """WebDriver終了"""

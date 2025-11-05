@@ -1,0 +1,42 @@
+{
+  "browser_extension_interference": {
+    "pattern": "Cannot redefine property: ethereum",
+    "description": "Browser extension (MetaMask, Pocket Universe) interference",
+    "fix_type": "add_chrome_flag",
+    "fix_content": "--disable-extensions",
+    "severity": "high",
+    "occurrences": 0
+  },
+  "kindle_terms_popup": {
+    "pattern": "Kindle.*\u898f\u7d04|terms.*agreement",
+    "description": "Kindle for Web terms popup blocking interaction",
+    "fix_type": "auto_dismiss_popup",
+    "fix_content": "XPath selector strategy",
+    "severity": "medium",
+    "occurrences": 0
+  },
+  "page_turn_failure": {
+    "pattern": "\u30da\u30fc\u30b8\u304c\u3081\u304f\u3089\u308c|page.*turn.*fail",
+    "description": "Kindle page turn failure",
+    "fix_type": "retry_with_wait",
+    "fix_content": "Add explicit wait and retry logic",
+    "severity": "high",
+    "occurrences": 0
+  },
+  "database_connection": {
+    "pattern": "connection.*refused|database.*not.*available",
+    "description": "Database connection failure",
+    "fix_type": "reconnect",
+    "fix_content": "Retry with exponential backoff",
+    "severity": "critical",
+    "occurrences": 0
+  },
+  "api_timeout": {
+    "pattern": "timeout|timed out",
+    "description": "API timeout",
+    "fix_type": "increase_timeout",
+    "fix_content": "Increase timeout from 30s to 60s",
+    "severity": "medium",
+    "occurrences": 0
+  }
+}
