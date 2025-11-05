@@ -33,6 +33,15 @@ class AgentType(Enum):
     PERFORMANCE = "performance"
     DEPLOYER = "deployer"
     AUDIT = "audit"
+    # 新規追加エージェント（2025-11-05）
+    DATABASE_MIGRATION = "database_migration"
+    ERROR_RECOVERY = "error_recovery"
+    API_TESTING = "api_testing"
+    DOCUMENTATION = "documentation"
+    MONITORING = "monitoring"
+    DEPENDENCY_MANAGEMENT = "dependency_management"
+    INFRASTRUCTURE_AS_CODE = "infrastructure_as_code"
+    MLOPS = "mlops"
 
 
 @dataclass
