@@ -37,6 +37,11 @@ sentence-transformers==2.2.2
 faiss-cpu==1.7.4
 # GPU版を使う場合は faiss-cpu を faiss-gpu に変更
 
+# ==================== Reranking ====================
+# Cross-encoder models for semantic reranking
+transformers==4.35.2
+torch==2.1.1  # PyTorch for cross-encoder models
+
 # ==================== LLM API ====================
 anthropic==0.7.4
 openai==1.3.7

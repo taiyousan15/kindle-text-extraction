@@ -1,0 +1,14 @@
+{
+  "query": "test query",
+  "metrics": {
+    "timestamp": "2025-11-05T20:35:53.929856",
+    "query": "test query",
+    "method": "cross_encoder",
+    "original_count": 15,
+    "reranked_count": 15,
+    "filtered_count": 0,
+    "avg_confidence": 0.0,
+    "score_improvement": -11.5533
+  },
+  "results": []
+}

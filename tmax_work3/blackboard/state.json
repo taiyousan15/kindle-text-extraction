@@ -169,7 +169,7 @@
       "current_task": null,
       "completed_tasks": [],
       "failed_tasks": [],
-      "last_heartbeat": "2025-11-05T17:54:00.884981",
+      "last_heartbeat": "2025-11-05T20:34:28.736607",
       "worktree": null,
       "tmux_window": null
     },
@@ -191,26 +191,21 @@
       "agent_type": "qa",
       "status": "idle",
       "current_task": null,
-      "completed_tasks": [
-        "qa-001",
-        "qa-002"
-      ],
+      "completed_tasks": [],
       "failed_tasks": [],
-      "last_heartbeat": "2025-11-05T17:54:00.985178",
-      "worktree": "worktrees/qa_env",
-      "tmux_window": "qa"
+      "last_heartbeat": "2025-11-05T20:54:42.651847",
+      "worktree": "main",
+      "tmux_window": null
     },
     "security": {
       "agent_type": "security",
       "status": "idle",
       "current_task": null,
-      "completed_tasks": [
-        "security-001"
-      ],
+      "completed_tasks": [],
       "failed_tasks": [],
-      "last_heartbeat": "2025-11-05T17:54:00.985541",
-      "worktree": "worktrees/build_env",
-      "tmux_window": "builder"
+      "last_heartbeat": "2025-11-05T20:49:52.341712",
+      "worktree": null,
+      "tmux_window": null
     },
     "deployer": {
       "agent_type": "deployer",
@@ -247,609 +242,778 @@
       "last_heartbeat": "2025-11-05T17:54:00.986657",
       "worktree": "worktrees/build_env",
       "tmux_window": "coordinator"
+    },
+    "database_migration": {
+      "agent_type": "database_migration",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T18:26:58.901652",
+      "worktree": "main",
+      "tmux_window": null
+    },
+    "error_recovery": {
+      "agent_type": "error_recovery",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T20:50:09.821891",
+      "worktree": "main",
+      "tmux_window": null
+    },
+    "api_testing": {
+      "agent_type": "api_testing",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T18:26:58.903951",
+      "worktree": "main",
+      "tmux_window": null
+    },
+    "documentation": {
+      "agent_type": "documentation",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T18:26:58.904505",
+      "worktree": "main",
+      "tmux_window": null
+    },
+    "monitoring": {
+      "agent_type": "monitoring",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T18:26:58.905185",
+      "worktree": "main",
+      "tmux_window": null
+    },
+    "dependency_management": {
+      "agent_type": "dependency_management",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T18:26:58.905686",
+      "worktree": "main",
+      "tmux_window": null
+    },
+    "infrastructure_as_code": {
+      "agent_type": "infrastructure_as_code",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T18:26:58.915412",
+      "worktree": "main",
+      "tmux_window": null
+    },
+    "mlops": {
+      "agent_type": "mlops",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T18:26:58.916424",
+      "worktree": "main",
+      "tmux_window": null
     }
   },
   "logs": [
     {
-      "timestamp": "2025-11-05T17:53:33.460907",
-      "level": "INFO",
-      "agent": null,
-      "message": "🤖 Agent registered: deployer"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:33.461309",
-      "level": "INFO",
-      "agent": null,
-      "message": "🤖 Agent registered: performance"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:33.461960",
-      "level": "INFO",
-      "agent": null,
-      "message": "🤖 Agent registered: audit"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:33.461970",
+      "timestamp": "2025-11-05T20:50:09.807857",
       "level": "SUCCESS",
-      "agent": null,
-      "message": "✅ Pipeline initialization complete"
+      "agent": "error_recovery",
+      "message": "✅ Analysis complete: 0 patterns matched"
     },
     {
-      "timestamp": "2025-11-05T17:53:33.461974",
+      "timestamp": "2025-11-05T20:50:09.807862",
       "level": "INFO",
-      "agent": null,
-      "message": "🔄 Starting coordination loop..."
+      "agent": "error_recovery",
+      "message": "🔧 Generating fix..."
     },
     {
-      "timestamp": "2025-11-05T17:53:33.462006",
+      "timestamp": "2025-11-05T20:50:09.807870",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: build-001 (Install dependencies) via builder"
+      "agent": "qa",
+      "message": "📍 Attempt 3/3"
     },
     {
-      "timestamp": "2025-11-05T17:53:33.462361",
+      "timestamp": "2025-11-05T20:50:09.807876",
       "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-001 (pending -> in_progress)"
+      "agent": "qa",
+      "message": "🔍 Validating code..."
     },
     {
-      "timestamp": "2025-11-05T17:53:33.462732",
+      "timestamp": "2025-11-05T20:50:09.807904",
+      "level": "WARNING",
+      "agent": "qa",
+      "message": "✅ Validation complete: Valid=False, Quality=0.50"
+    },
+    {
+      "timestamp": "2025-11-05T20:50:09.807910",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: build-001 -> builder"
+      "agent": "qa",
+      "message": "🛠️ Generating correction..."
     },
     {
-      "timestamp": "2025-11-05T17:53:36.472707",
+      "timestamp": "2025-11-05T20:50:09.807916",
       "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-001 (in_progress -> completed)"
+      "agent": "error_recovery",
+      "message": "🔍 Analyzing error..."
     },
     {
-      "timestamp": "2025-11-05T17:53:37.475098",
+      "timestamp": "2025-11-05T20:50:09.807949",
+      "level": "SUCCESS",
+      "agent": "error_recovery",
+      "message": "✅ Analysis complete: 0 patterns matched"
+    },
+    {
+      "timestamp": "2025-11-05T20:50:09.807955",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: build-002 (Run linters) via builder"
+      "agent": "error_recovery",
+      "message": "🔧 Generating fix..."
     },
     {
-      "timestamp": "2025-11-05T17:53:37.475507",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-002 (pending -> in_progress)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:37.475781",
-      "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: build-002 -> builder"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:40.568598",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-002 (in_progress -> completed)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:41.572870",
-      "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: build-003 (Compile application) via builder"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:41.573544",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-003 (pending -> in_progress)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:41.574129",
-      "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: build-003 -> builder"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:44.587302",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-003 (in_progress -> completed)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:45.588130",
-      "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: qa-001 (Run unit tests) via qa"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:45.588758",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: qa-001 (pending -> in_progress)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:45.589411",
-      "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: qa-001 -> qa"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:48.597150",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: qa-001 (in_progress -> completed)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:48.597693",
-      "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: security-001 (Security scan) via security"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:48.598085",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: security-001 (pending -> in_progress)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:48.598459",
-      "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: security-001 -> security"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:51.610728",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: security-001 (in_progress -> completed)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:52.612291",
-      "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: qa-002 (Run integration tests) via qa"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:52.613946",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: qa-002 (pending -> in_progress)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:52.614992",
-      "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: qa-002 -> qa"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:55.624588",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: qa-002 (in_progress -> completed)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:56.629565",
-      "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: deploy-001 (Deploy to railway) via deployer"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:56.630331",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: deploy-001 (pending -> in_progress)"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:56.630748",
-      "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: deploy-001 -> deployer"
-    },
-    {
-      "timestamp": "2025-11-05T17:53:59.642529",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: deploy-001 (in_progress -> completed)"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.648123",
-      "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: monitor-001 (Monitor deployment) via performance"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.649032",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: monitor-001 (pending -> in_progress)"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.885676",
-      "level": "INFO",
-      "agent": null,
-      "message": "🤖 Agent registered: coordinator"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.885693",
-      "level": "INFO",
-      "agent": null,
-      "message": "🚀 Initializing T-Max Work3 pipeline..."
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.885696",
-      "level": "INFO",
-      "agent": null,
-      "message": "📂 Creating git worktrees..."
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.898014",
+      "timestamp": "2025-11-05T20:50:09.807963",
       "level": "ERROR",
-      "agent": null,
-      "message": "❌ Failed to create worktree build_env: Preparing worktree (checking out 'main')\nfatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'\n"
+      "agent": "qa",
+      "message": "❌ Failed to correct code after 3 attempts"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.909911",
-      "level": "ERROR",
-      "agent": null,
-      "message": "❌ Failed to create worktree qa_env: Preparing worktree (checking out 'main')\nfatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'\n"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.921776",
-      "level": "ERROR",
-      "agent": null,
-      "message": "❌ Failed to create worktree deploy_env: Preparing worktree (checking out 'main')\nfatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'\n"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.935348",
-      "level": "ERROR",
-      "agent": null,
-      "message": "❌ Failed to create worktree monitor_env: Preparing worktree (checking out 'main')\nfatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'\n"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.935393",
+      "timestamp": "2025-11-05T20:50:09.808281",
       "level": "INFO",
-      "agent": null,
-      "message": "🖥️  Creating tmux session..."
+      "agent": "qa",
+      "message": "💾 Correction history saved: /private/var/folders/7c/tk7f1jzs1vd65g0jctt21dy80000gn/T/pytest-of-matsumototoshihiko/pytest-8/test_fix_indentation_mixed0/tmax_work3/data/correction_history/correction_20251105_205009.json"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.980393",
-      "level": "INFO",
-      "agent": null,
-      "message": "✅ tmux session created: TMAX_FULLAUTO"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.980474",
-      "level": "INFO",
-      "agent": null,
-      "message": "   Access: tmux attach -t TMAX_FULLAUTO"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.980493",
-      "level": "INFO",
-      "agent": null,
-      "message": "🔗 Building task DAG..."
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.981160",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: build-001 (Install dependencies) -> builder"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.981616",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: build-002 (Run linters) -> builder"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.982012",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: build-003 (Compile application) -> builder"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.982390",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: qa-001 (Run unit tests) -> qa"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.983104",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: qa-002 (Run integration tests) -> qa"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.983540",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: security-001 (Security scan) -> security"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.983939",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: deploy-001 (Deploy to railway) -> deployer"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.984367",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: monitor-001 (Monitor deployment) -> performance"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.984776",
-      "level": "INFO",
-      "agent": null,
-      "message": "📝 Task added: audit-001 (Generate final report) -> audit"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.984782",
-      "level": "INFO",
-      "agent": null,
-      "message": "✅ Task DAG built: 9 tasks"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.985176",
-      "level": "INFO",
-      "agent": null,
-      "message": "🤖 Agent registered: builder"
-    },
-    {
-      "timestamp": "2025-11-05T17:54:00.985539",
+      "timestamp": "2025-11-05T20:50:09.812079",
       "level": "INFO",
       "agent": null,
       "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.985898",
+      "timestamp": "2025-11-05T20:50:09.812100",
       "level": "INFO",
-      "agent": null,
-      "message": "🤖 Agent registered: security"
+      "agent": "qa",
+      "message": "🏆 Evaluator Agent initialized - Best-of-N scoring system ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.986281",
+      "timestamp": "2025-11-05T20:50:09.812171",
       "level": "INFO",
-      "agent": null,
-      "message": "🤖 Agent registered: deployer"
+      "agent": "error_recovery",
+      "message": "✅ ErrorPromptGenerator initialized"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.986656",
+      "timestamp": "2025-11-05T20:50:09.814933",
       "level": "INFO",
       "agent": null,
-      "message": "🤖 Agent registered: performance"
+      "message": "🤖 Agent registered: error_recovery"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.987046",
+      "timestamp": "2025-11-05T20:50:09.815202",
+      "level": "INFO",
+      "agent": "error_recovery",
+      "message": "🚨 Error Recovery Agent initialized"
+    },
+    {
+      "timestamp": "2025-11-05T20:50:09.817938",
       "level": "INFO",
       "agent": null,
-      "message": "🤖 Agent registered: audit"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.987050",
+      "timestamp": "2025-11-05T20:50:09.817962",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔄 Self-Correction Agent initialized - Auto-validation and learning enabled"
+    },
+    {
+      "timestamp": "2025-11-05T20:50:09.818243",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Validating code..."
+    },
+    {
+      "timestamp": "2025-11-05T20:50:09.818360",
       "level": "SUCCESS",
-      "agent": null,
-      "message": "✅ Pipeline initialization complete"
+      "agent": "qa",
+      "message": "✅ Validation complete: Valid=True, Quality=1.00"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.987054",
+      "timestamp": "2025-11-05T20:50:09.821817",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Starting coordination loop..."
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.987079",
+      "timestamp": "2025-11-05T20:50:09.821830",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: build-001 (Install dependencies) via builder"
+      "agent": "qa",
+      "message": "🏆 Evaluator Agent initialized - Best-of-N scoring system ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.987507",
+      "timestamp": "2025-11-05T20:50:09.821884",
       "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-001 (pending -> in_progress)"
+      "agent": "error_recovery",
+      "message": "✅ ErrorPromptGenerator initialized"
     },
     {
-      "timestamp": "2025-11-05T17:54:00.987919",
+      "timestamp": "2025-11-05T20:50:09.824428",
       "level": "INFO",
       "agent": null,
-      "message": "📌 Task assigned: build-001 -> builder"
+      "message": "🤖 Agent registered: error_recovery"
     },
     {
-      "timestamp": "2025-11-05T17:54:03.998377",
+      "timestamp": "2025-11-05T20:50:09.824604",
       "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-001 (in_progress -> completed)"
+      "agent": "error_recovery",
+      "message": "🚨 Error Recovery Agent initialized"
     },
     {
-      "timestamp": "2025-11-05T17:54:05.004072",
+      "timestamp": "2025-11-05T20:51:16.912157",
       "level": "INFO",
       "agent": null,
-      "message": "🚀 Executing task: build-002 (Run linters) via builder"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:05.004827",
+      "timestamp": "2025-11-05T20:51:16.912176",
       "level": "INFO",
-      "agent": null,
-      "message": "🔄 Task status updated: build-002 (pending -> in_progress)"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:05.005413",
+      "timestamp": "2025-11-05T20:51:16.912183",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: build-002 -> builder"
+      "agent": "qa",
+      "message": "🔍 Starting code review for directories: tmax_work3/agents"
     },
     {
-      "timestamp": "2025-11-05T17:54:08.013330",
+      "timestamp": "2025-11-05T20:54:36.649870",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: build-002 (in_progress -> completed)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:09.018673",
+      "timestamp": "2025-11-05T20:54:36.649883",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: build-003 (Compile application) via builder"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:09.019636",
+      "timestamp": "2025-11-05T20:54:36.652786",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: build-003 (pending -> in_progress)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:09.020208",
+      "timestamp": "2025-11-05T20:54:36.652818",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: build-003 -> builder"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:12.029084",
+      "timestamp": "2025-11-05T20:54:36.655353",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: build-003 (in_progress -> completed)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:13.034423",
+      "timestamp": "2025-11-05T20:54:36.655367",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: qa-001 (Run unit tests) via qa"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:13.035357",
+      "timestamp": "2025-11-05T20:54:36.917008",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: qa-001 (pending -> in_progress)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:13.035918",
+      "timestamp": "2025-11-05T20:54:36.917044",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: qa-001 -> qa"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:16.046773",
+      "timestamp": "2025-11-05T20:54:37.333713",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: qa-001 (in_progress -> completed)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:16.047610",
+      "timestamp": "2025-11-05T20:54:37.333741",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: security-001 (Security scan) via security"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:16.048407",
+      "timestamp": "2025-11-05T20:54:38.170827",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: security-001 (pending -> in_progress)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:16.049189",
+      "timestamp": "2025-11-05T20:54:38.170877",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: security-001 -> security"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:19.066372",
+      "timestamp": "2025-11-05T20:54:38.291048",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: security-001 (in_progress -> completed)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:20.071990",
+      "timestamp": "2025-11-05T20:54:38.291078",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: qa-002 (Run integration tests) via qa"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:20.073383",
+      "timestamp": "2025-11-05T20:54:38.390354",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: qa-002 (pending -> in_progress)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:20.074140",
+      "timestamp": "2025-11-05T20:54:38.390387",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: qa-002 -> qa"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:23.101179",
+      "timestamp": "2025-11-05T20:54:38.393216",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: qa-002 (in_progress -> completed)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:24.106737",
+      "timestamp": "2025-11-05T20:54:38.393246",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: deploy-001 (Deploy to railway) via deployer"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:24.107641",
+      "timestamp": "2025-11-05T20:54:38.398099",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: deploy-001 (pending -> in_progress)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:24.108401",
+      "timestamp": "2025-11-05T20:54:38.398124",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: deploy-001 -> deployer"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:27.158236",
+      "timestamp": "2025-11-05T20:54:38.526805",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: deploy-001 (in_progress -> completed)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:28.163887",
+      "timestamp": "2025-11-05T20:54:38.526826",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: monitor-001 (Monitor deployment) via performance"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:28.164679",
+      "timestamp": "2025-11-05T20:54:38.590800",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: monitor-001 (pending -> in_progress)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:28.165282",
+      "timestamp": "2025-11-05T20:54:38.590844",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: monitor-001 -> performance"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:31.204032",
+      "timestamp": "2025-11-05T20:54:38.648655",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: monitor-001 (in_progress -> completed)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:32.209884",
+      "timestamp": "2025-11-05T20:54:38.648683",
       "level": "INFO",
-      "agent": null,
-      "message": "🚀 Executing task: audit-001 (Generate final report) via audit"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:32.211266",
+      "timestamp": "2025-11-05T20:54:38.708997",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: audit-001 (pending -> in_progress)"
+      "message": "🤖 Agent registered: qa"
     },
     {
-      "timestamp": "2025-11-05T17:54:32.212179",
+      "timestamp": "2025-11-05T20:54:38.709048",
       "level": "INFO",
-      "agent": null,
-      "message": "📌 Task assigned: audit-001 -> audit"
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
     },
     {
-      "timestamp": "2025-11-05T17:54:35.224387",
+      "timestamp": "2025-11-05T20:54:38.712777",
       "level": "INFO",
       "agent": null,
-      "message": "🔄 Task status updated: audit-001 (in_progress -> completed)"
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.712812",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.713450",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "📄 Review report saved: /var/folders/7c/tk7f1jzs1vd65g0jctt21dy80000gn/T/tmpxpvvr372/tmax_work3/data/code_reviews/review_20251105_205438.md"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.715497",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.715519",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.717662",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.717689",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.719939",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.719977",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.722443",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.722483",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.725171",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.725193",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.725302",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "Test log message"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.727204",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.727228",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.730026",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.730045",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:38.730153",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Starting code review for directories: app"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:39.766890",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "📄 Review report saved: /var/folders/7c/tk7f1jzs1vd65g0jctt21dy80000gn/T/tmpek6tknzw/tmax_work3/data/code_reviews/review_20251105_205439.md"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:39.766924",
+      "level": "SUCCESS",
+      "agent": "qa",
+      "message": "✅ Code review complete - Score: 71.0/100 (2 files)"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:39.769545",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:39.769564",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:39.769677",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Starting code review for directories: app"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.882742",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "📄 Review report saved: /var/folders/7c/tk7f1jzs1vd65g0jctt21dy80000gn/T/tmp1828x1b0/tmax_work3/data/code_reviews/review_20251105_205440.md"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.882770",
+      "level": "SUCCESS",
+      "agent": "qa",
+      "message": "✅ Code review complete - Score: 71.0/100 (2 files)"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.885307",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.885321",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.885430",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Starting code review for directories: nonexistent_dir"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.885462",
+      "level": "WARNING",
+      "agent": "qa",
+      "message": "⚠️ Directory not found: nonexistent_dir"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.887185",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "📄 Review report saved: /var/folders/7c/tk7f1jzs1vd65g0jctt21dy80000gn/T/tmp2ki72lkk/tmax_work3/data/code_reviews/review_20251105_205440.md"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.887194",
+      "level": "SUCCESS",
+      "agent": "qa",
+      "message": "✅ Code review complete - Score: 79.0/100 (0 files)"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.888677",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.888691",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.888811",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Starting code review for directories: empty"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.890587",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "📄 Review report saved: /var/folders/7c/tk7f1jzs1vd65g0jctt21dy80000gn/T/tmp8w9wj1ct/tmax_work3/data/code_reviews/review_20251105_205440.md"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.890596",
+      "level": "SUCCESS",
+      "agent": "qa",
+      "message": "✅ Code review complete - Score: 79.0/100 (0 files)"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.892080",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:40.892090",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:41.674216",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:41.674233",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Code Review Agent initialized - Automated quality analysis ready"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:41.674353",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "🔍 Starting code review for directories: app"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:42.649931",
+      "level": "INFO",
+      "agent": "qa",
+      "message": "📄 Review report saved: /var/folders/7c/tk7f1jzs1vd65g0jctt21dy80000gn/T/tmp2o9t11h4/tmax_work3/data/code_reviews/review_20251105_205442.md"
+    },
+    {
+      "timestamp": "2025-11-05T20:54:42.649958",
+      "level": "SUCCESS",
+      "agent": "qa",
+      "message": "✅ Code review complete - Score: 71.0/100 (2 files)"
     }
   ],
-  "metrics": {}
+  "metrics": {
+    "reranking": {
+      "What is machine learning and deep learning?": {
+        "timestamp": "2025-11-05T20:33:10.488796",
+        "query": "What is machine learning and deep learning?",
+        "method": "cross_encoder",
+        "original_count": 5,
+        "reranked_count": 5,
+        "filtered_count": 5,
+        "avg_confidence": 0.5410999999999999,
+        "score_improvement": -0.05
+      },
+      "test query": {
+        "timestamp": "2025-11-05T20:35:53.929856",
+        "query": "test query",
+        "method": "cross_encoder",
+        "original_count": 15,
+        "reranked_count": 15,
+        "filtered_count": 0,
+        "avg_confidence": 0.0,
+        "score_improvement": -11.5533
+      },
+      "What is machine learning and how does it work?": {
+        "timestamp": "2025-11-05T20:35:36.868137",
+        "query": "What is machine learning and how does it work?",
+        "method": "cross_encoder",
+        "original_count": 5,
+        "reranked_count": 5,
+        "filtered_count": 4,
+        "avg_confidence": 0.7132000000000001,
+        "score_improvement": 1.9305
+      },
+      "How do neural networks learn and improve their pre": {
+        "timestamp": "2025-11-05T20:35:39.028420",
+        "query": "How do neural networks learn and improve their predictions?",
+        "method": "llm",
+        "original_count": 3,
+        "reranked_count": 3,
+        "filtered_count": 3,
+        "avg_confidence": 0.5,
+        "score_improvement": 0.0
+      },
+      "Explain machine learning concepts": {
+        "timestamp": "2025-11-05T20:35:41.601638",
+        "query": "Explain machine learning concepts",
+        "method": "hybrid",
+        "original_count": 10,
+        "reranked_count": 10,
+        "filtered_count": 0,
+        "avg_confidence": 0.0,
+        "score_improvement": -0.5033
+      },
+      "Explain the concept in detail": {
+        "timestamp": "2025-11-05T20:35:44.266110",
+        "query": "Explain the concept in detail",
+        "method": "cross_encoder",
+        "original_count": 20,
+        "reranked_count": 20,
+        "filtered_count": 0,
+        "avg_confidence": 0.0,
+        "score_improvement": -12.1578
+      },
+      "Explain machine learning algorithms": {
+        "timestamp": "2025-11-05T20:35:47.111252",
+        "query": "Explain machine learning algorithms",
+        "method": "cross_encoder",
+        "original_count": 5,
+        "reranked_count": 5,
+        "filtered_count": 2,
+        "avg_confidence": 0.6338,
+        "score_improvement": -6.5954
+      },
+      "Explain machine learning": {
+        "timestamp": "2025-11-05T20:37:44.377769",
+        "query": "Explain machine learning",
+        "method": "cross_encoder",
+        "original_count": 4,
+        "reranked_count": 4,
+        "filtered_count": 1,
+        "avg_confidence": 0.8529,
+        "score_improvement": -6.8103
+      }
+    },
+    "code_review": {
+      "test_score": 85.5,
+      "total_score": 71.05,
+      "files_reviewed": 2,
+      "security_issues": 2
+    }
+  }
 }

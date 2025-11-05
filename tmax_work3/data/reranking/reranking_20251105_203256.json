@@ -1,0 +1,51 @@
+{
+  "query": "What is machine learning and deep learning?",
+  "metrics": {
+    "timestamp": "2025-11-05T20:32:56.702563",
+    "query": "What is machine learning and deep learning?",
+    "method": "hybrid",
+    "original_count": 5,
+    "reranked_count": 5,
+    "filtered_count": 3,
+    "avg_confidence": 0.8527999999999999,
+    "score_improvement": -0.041
+  },
+  "results": [
+    {
+      "doc_id": "doc1",
+      "content": "Machine learning is a subset of artificial intelligence that enables systems to learn from data without explicit programming.",
+      "original_score": 0.85,
+      "rerank_score": 0.929,
+      "confidence": 0.8952,
+      "method": "hybrid",
+      "metadata": {
+        "source": "textbook",
+        "year": 2023
+      }
+    },
+    {
+      "doc_id": "doc2",
+      "content": "Deep learning is a type of machine learning based on artificial neural networks with multiple layers.",
+      "original_score": 0.78,
+      "rerank_score": 0.886,
+      "confidence": 0.8732,
+      "method": "hybrid",
+      "metadata": {
+        "source": "research_paper",
+        "year": 2024
+      }
+    },
+    {
+      "doc_id": "doc4",
+      "content": "Natural language processing uses machine learning to understand and generate human language.",
+      "original_score": 0.72,
+      "rerank_score": 0.7649999999999999,
+      "confidence": 0.79,
+      "method": "hybrid",
+      "metadata": {
+        "source": "article",
+        "year": 2024
+      }
+    }
+  ]
+}

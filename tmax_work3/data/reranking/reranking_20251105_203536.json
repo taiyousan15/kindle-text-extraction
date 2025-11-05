@@ -1,0 +1,61 @@
+{
+  "query": "What is machine learning and how does it work?",
+  "metrics": {
+    "timestamp": "2025-11-05T20:35:36.868137",
+    "query": "What is machine learning and how does it work?",
+    "method": "cross_encoder",
+    "original_count": 5,
+    "reranked_count": 5,
+    "filtered_count": 4,
+    "avg_confidence": 0.7132000000000001,
+    "score_improvement": 1.9305
+  },
+  "results": [
+    {
+      "doc_id": "doc1",
+      "content": "Machine learning is a subset of artificial intelligence that enables computers to learn from data without being explicitly programmed.",
+      "original_score": 0.75,
+      "rerank_score": 8.66372299194336,
+      "confidence": 0.8971,
+      "method": "cross_encoder",
+      "metadata": {
+        "source": "textbook",
+        "page": 42
+      }
+    },
+    {
+      "doc_id": "doc2",
+      "content": "Deep learning is a type of machine learning that uses neural networks with multiple layers to analyze various factors of data.",
+      "original_score": 0.82,
+      "rerank_score": 3.522671937942505,
+      "confidence": 0.707,
+      "method": "cross_encoder",
+      "metadata": {
+        "source": "research_paper",
+        "year": 2024
+      }
+    },
+    {
+      "doc_id": "doc5",
+      "content": "Supervised learning is a type of machine learning where the model is trained on labeled data.",
+      "original_score": 0.79,
+      "rerank_score": 2.1402456760406494,
+      "confidence": 0.6307,
+      "method": "cross_encoder",
+      "metadata": {
+        "source": "course"
+      }
+    },
+    {
+      "doc_id": "doc4",
+      "content": "Natural language processing (NLP) uses machine learning algorithms to understand and generate human language.",
+      "original_score": 0.71,
+      "rerank_score": 1.9239230155944824,
+      "confidence": 0.618,
+      "method": "cross_encoder",
+      "metadata": {
+        "source": "article"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "query": "Explain machine learning concepts",
+  "metrics": {
+    "timestamp": "2025-11-05T20:35:41.601638",
+    "query": "Explain machine learning concepts",
+    "method": "hybrid",
+    "original_count": 10,
+    "reranked_count": 10,
+    "filtered_count": 0,
+    "avg_confidence": 0.0,
+    "score_improvement": -0.5033
+  },
+  "results": []
+}

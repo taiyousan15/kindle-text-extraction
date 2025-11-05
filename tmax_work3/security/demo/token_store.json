@@ -1,0 +1,73 @@
+{
+  "3b4577ac-02e6-4f91-a80a-5861660dc182": {
+    "agent_type": "coordinator",
+    "issued_at": "2025-11-05T20:49:52.346449",
+    "expires_at": "2025-11-05T21:49:52.344732",
+    "revoked": false,
+    "metadata": {
+      "session": "demo-session",
+      "timestamp": "2025-11-05"
+    }
+  },
+  "d7c3150c-5d20-4fd7-bd19-af955fad8627": {
+    "agent_type": "builder",
+    "issued_at": "2025-11-05T20:49:52.346965",
+    "expires_at": "2025-11-05T21:49:52.346902",
+    "revoked": false,
+    "metadata": {
+      "session": "demo-session",
+      "timestamp": "2025-11-05"
+    }
+  },
+  "12b0791f-357e-4e86-9aa1-137f53b80455": {
+    "agent_type": "qa",
+    "issued_at": "2025-11-05T20:49:52.347581",
+    "expires_at": "2025-11-05T21:49:52.347556",
+    "revoked": true,
+    "metadata": {
+      "session": "demo-session",
+      "timestamp": "2025-11-05"
+    },
+    "revoked_at": "2025-11-05T20:49:52.354384"
+  },
+  "6d65b364-0113-417d-853b-efde4df60e51": {
+    "agent_type": "security",
+    "issued_at": "2025-11-05T20:49:52.347883",
+    "expires_at": "2025-11-05T21:49:52.347864",
+    "revoked": false,
+    "metadata": {
+      "session": "demo-session",
+      "timestamp": "2025-11-05"
+    }
+  },
+  "28157639-445f-4100-a99c-dd2804f60a22": {
+    "agent_type": "deployer",
+    "issued_at": "2025-11-05T20:49:52.348324",
+    "expires_at": "2025-11-05T21:49:52.348305",
+    "revoked": false,
+    "metadata": {
+      "session": "demo-session",
+      "timestamp": "2025-11-05"
+    }
+  },
+  "a10b318a-8dfe-4625-b46d-eabd6c51f3f8": {
+    "agent_type": "performance",
+    "issued_at": "2025-11-05T20:49:52.348613",
+    "expires_at": "2025-11-05T21:49:52.348595",
+    "revoked": false,
+    "metadata": {
+      "session": "demo-session",
+      "timestamp": "2025-11-05"
+    }
+  },
+  "6c7fe58a-333e-4d95-bc0e-44979f3f4274": {
+    "agent_type": "audit",
+    "issued_at": "2025-11-05T20:49:52.348958",
+    "expires_at": "2025-11-05T21:49:52.348941",
+    "revoked": false,
+    "metadata": {
+      "session": "demo-session",
+      "timestamp": "2025-11-05"
+    }
+  }
+}

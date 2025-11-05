@@ -1,0 +1,48 @@
+{
+  "query": "How do neural networks learn and improve their predictions?",
+  "metrics": {
+    "timestamp": "2025-11-05T20:35:39.028420",
+    "query": "How do neural networks learn and improve their predictions?",
+    "method": "llm",
+    "original_count": 3,
+    "reranked_count": 3,
+    "filtered_count": 3,
+    "avg_confidence": 0.5,
+    "score_improvement": 0.0
+  },
+  "results": [
+    {
+      "doc_id": "doc1",
+      "content": "Gradient descent is an optimization algorithm used to minimize the loss function in machine learning by iteratively adjusting parameters.",
+      "original_score": 0.7,
+      "rerank_score": 0.7,
+      "confidence": 0.5,
+      "method": "llm_fallback",
+      "metadata": {
+        "difficulty": "advanced"
+      }
+    },
+    {
+      "doc_id": "doc2",
+      "content": "The backpropagation algorithm is used in neural networks to calculate gradients and update weights during training.",
+      "original_score": 0.65,
+      "rerank_score": 0.65,
+      "confidence": 0.5,
+      "method": "llm_fallback",
+      "metadata": {
+        "difficulty": "advanced"
+      }
+    },
+    {
+      "doc_id": "doc3",
+      "content": "A neural network learns by adjusting connection weights between neurons based on the error in its predictions.",
+      "original_score": 0.8,
+      "rerank_score": 0.8,
+      "confidence": 0.5,
+      "method": "llm_fallback",
+      "metadata": {
+        "difficulty": "intermediate"
+      }
+    }
+  ]
+}

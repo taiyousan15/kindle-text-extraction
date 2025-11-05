@@ -1,0 +1,14 @@
+{
+  "query": "Explain the concept in detail",
+  "metrics": {
+    "timestamp": "2025-11-05T20:35:44.266110",
+    "query": "Explain the concept in detail",
+    "method": "cross_encoder",
+    "original_count": 20,
+    "reranked_count": 20,
+    "filtered_count": 0,
+    "avg_confidence": 0.0,
+    "score_improvement": -12.1578
+  },
+  "results": []
+}

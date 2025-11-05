@@ -1,0 +1,43 @@
+[
+  {
+    "attempt_number": 1,
+    "original_code": "\ndef calculate_sum(a, b):\n    result = a + b\n      return result  # \u30a4\u30f3\u30c7\u30f3\u30c8\u30a8\u30e9\u30fc\n\ndef divide(x, y):\n    return x / y  # division by zero\u306e\u53ef\u80fd\u6027\n",
+    "corrected_code": "\ndef calculate_sum(a, b):\n    result = a + b\nreturn result  # \u30a4\u30f3\u30c7\u30f3\u30c8\u30a8\u30e9\u30fc\n\ndef divide(x, y):\n    return x / y  # division by zero\u306e\u53ef\u80fd\u6027\n",
+    "validation_result": {
+      "is_valid": false,
+      "syntax_errors": [
+        {
+          "type": "SyntaxError",
+          "message": "unexpected indent (<unknown>, line 4)",
+          "line": 4,
+          "offset": 6
+        }
+      ],
+      "test_failures": [],
+      "quality_score": 0.5,
+      "error_patterns": [
+        "unexpected_indent"
+      ],
+      "timestamp": "2025-11-05T20:47:26.409871"
+    },
+    "correction_strategy": "pattern_based",
+    "success": false,
+    "timestamp": "2025-11-05T20:47:26.410046"
+  },
+  {
+    "attempt_number": 2,
+    "original_code": "\ndef calculate_sum(a, b):\n    result = a + b\n      return result  # \u30a4\u30f3\u30c7\u30f3\u30c8\u30a8\u30e9\u30fc\n\ndef divide(x, y):\n    return x / y  # division by zero\u306e\u53ef\u80fd\u6027\n",
+    "corrected_code": "\ndef calculate_sum(a, b):\n    result = a + b\nreturn result  # \u30a4\u30f3\u30c7\u30f3\u30c8\u30a8\u30e9\u30fc\n\ndef divide(x, y):\n    return x / y  # division by zero\u306e\u53ef\u80fd\u6027\n",
+    "validation_result": {
+      "is_valid": true,
+      "syntax_errors": [],
+      "test_failures": [],
+      "quality_score": 1.0,
+      "error_patterns": [],
+      "timestamp": "2025-11-05T20:47:26.410125"
+    },
+    "correction_strategy": "validation_passed",
+    "success": true,
+    "timestamp": "2025-11-05T20:47:26.410233"
+  }
+]

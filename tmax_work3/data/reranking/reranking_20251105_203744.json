@@ -1,0 +1,24 @@
+{
+  "query": "Explain machine learning",
+  "metrics": {
+    "timestamp": "2025-11-05T20:37:44.377769",
+    "query": "Explain machine learning",
+    "method": "cross_encoder",
+    "original_count": 4,
+    "reranked_count": 4,
+    "filtered_count": 1,
+    "avg_confidence": 0.8529,
+    "score_improvement": -6.8103
+  },
+  "results": [
+    {
+      "doc_id": "doc1",
+      "content": "Machine learning is AI subset that learns from data",
+      "original_score": 0.65,
+      "rerank_score": 7.030515670776367,
+      "confidence": 0.8529,
+      "method": "cross_encoder",
+      "metadata": null
+    }
+  ]
+}

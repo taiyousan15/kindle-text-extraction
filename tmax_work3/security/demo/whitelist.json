@@ -1,0 +1,80 @@
+{
+  "coordinator": {
+    "permissions": [
+      "admin",
+      "coordinate",
+      "assign"
+    ],
+    "max_tokens": 1000,
+    "rate_limit_per_minute": 600,
+    "token_count": 1,
+    "added_at": "2025-11-05T20:49:52.342699"
+  },
+  "builder": {
+    "permissions": [
+      "read",
+      "write",
+      "build"
+    ],
+    "max_tokens": 100,
+    "rate_limit_per_minute": 60,
+    "token_count": 1,
+    "added_at": "2025-11-05T20:49:52.343098"
+  },
+  "qa": {
+    "permissions": [
+      "read",
+      "test",
+      "report"
+    ],
+    "max_tokens": 100,
+    "rate_limit_per_minute": 60,
+    "token_count": 1,
+    "added_at": "2025-11-05T20:49:52.343361"
+  },
+  "security": {
+    "permissions": [
+      "read",
+      "scan",
+      "audit"
+    ],
+    "max_tokens": 50,
+    "rate_limit_per_minute": 30,
+    "token_count": 1,
+    "added_at": "2025-11-05T20:49:52.343698"
+  },
+  "deployer": {
+    "permissions": [
+      "read",
+      "deploy",
+      "rollback",
+      "emergency_stop"
+    ],
+    "max_tokens": 10,
+    "rate_limit_per_minute": 10,
+    "token_count": 1,
+    "added_at": "2025-11-05T20:49:52.343854"
+  },
+  "performance": {
+    "permissions": [
+      "read",
+      "monitor",
+      "analyze"
+    ],
+    "max_tokens": 100,
+    "rate_limit_per_minute": 60,
+    "token_count": 1,
+    "added_at": "2025-11-05T20:49:52.344037"
+  },
+  "audit": {
+    "permissions": [
+      "read",
+      "audit",
+      "report"
+    ],
+    "max_tokens": 50,
+    "rate_limit_per_minute": 30,
+    "token_count": 1,
+    "added_at": "2025-11-05T20:49:52.344381"
+  }
+}

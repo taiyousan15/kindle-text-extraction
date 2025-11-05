@@ -1,0 +1,468 @@
+[
+  {
+    "timestamp": "2025-11-05T20:49:52.342925",
+    "action": "register_agent",
+    "agent_type": "coordinator",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "admin",
+        "coordinate",
+        "assign"
+      ],
+      "max_tokens": 1000,
+      "rate_limit": 600
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.343184",
+    "action": "register_agent",
+    "agent_type": "builder",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "write",
+        "build"
+      ],
+      "max_tokens": 100,
+      "rate_limit": 60
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.343582",
+    "action": "register_agent",
+    "agent_type": "qa",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "test",
+        "report"
+      ],
+      "max_tokens": 100,
+      "rate_limit": 60
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.343772",
+    "action": "register_agent",
+    "agent_type": "security",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "scan",
+        "audit"
+      ],
+      "max_tokens": 50,
+      "rate_limit": 30
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.343933",
+    "action": "register_agent",
+    "agent_type": "deployer",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "deploy",
+        "rollback"
+      ],
+      "max_tokens": 10,
+      "rate_limit": 10
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.344268",
+    "action": "register_agent",
+    "agent_type": "performance",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "monitor",
+        "analyze"
+      ],
+      "max_tokens": 100,
+      "rate_limit": 60
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.344491",
+    "action": "register_agent",
+    "agent_type": "audit",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "audit",
+        "report"
+      ],
+      "max_tokens": 50,
+      "rate_limit": 30
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.346703",
+    "action": "authenticate",
+    "agent_type": "coordinator",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "admin",
+        "coordinate",
+        "assign"
+      ],
+      "metadata": {
+        "session": "demo-session",
+        "timestamp": "2025-11-05"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.347402",
+    "action": "authenticate",
+    "agent_type": "builder",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "write",
+        "build"
+      ],
+      "metadata": {
+        "session": "demo-session",
+        "timestamp": "2025-11-05"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.347741",
+    "action": "authenticate",
+    "agent_type": "qa",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "test",
+        "report"
+      ],
+      "metadata": {
+        "session": "demo-session",
+        "timestamp": "2025-11-05"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.348169",
+    "action": "authenticate",
+    "agent_type": "security",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "scan",
+        "audit"
+      ],
+      "metadata": {
+        "session": "demo-session",
+        "timestamp": "2025-11-05"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.348465",
+    "action": "authenticate",
+    "agent_type": "deployer",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "deploy",
+        "rollback"
+      ],
+      "metadata": {
+        "session": "demo-session",
+        "timestamp": "2025-11-05"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.348757",
+    "action": "authenticate",
+    "agent_type": "performance",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "monitor",
+        "analyze"
+      ],
+      "metadata": {
+        "session": "demo-session",
+        "timestamp": "2025-11-05"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.349111",
+    "action": "authenticate",
+    "agent_type": "audit",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permissions": [
+        "read",
+        "audit",
+        "report"
+      ],
+      "metadata": {
+        "session": "demo-session",
+        "timestamp": "2025-11-05"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.349505",
+    "action": "verify",
+    "agent_type": "coordinator",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "3b4577ac-02e6-4f91-a80a-5861660dc182"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.349786",
+    "action": "verify",
+    "agent_type": "builder",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "d7c3150c-5d20-4fd7-bd19-af955fad8627"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.350139",
+    "action": "verify",
+    "agent_type": "qa",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "12b0791f-357e-4e86-9aa1-137f53b80455"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.350647",
+    "action": "verify",
+    "agent_type": "security",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "6d65b364-0113-417d-853b-efde4df60e51"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.351130",
+    "action": "verify",
+    "agent_type": "deployer",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "28157639-445f-4100-a99c-dd2804f60a22"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.351651",
+    "action": "verify",
+    "agent_type": "performance",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "a10b318a-8dfe-4625-b46d-eabd6c51f3f8"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.351995",
+    "action": "verify",
+    "agent_type": "audit",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "6c7fe58a-333e-4d95-bc0e-44979f3f4274"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.352286",
+    "action": "verify",
+    "agent_type": "builder",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "d7c3150c-5d20-4fd7-bd19-af955fad8627"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.352505",
+    "action": "authorize",
+    "agent_type": "builder",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permission": "build",
+      "has_permission": true
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.352958",
+    "action": "verify",
+    "agent_type": "builder",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "d7c3150c-5d20-4fd7-bd19-af955fad8627"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.353216",
+    "action": "authorize",
+    "agent_type": "builder",
+    "status": "denied",
+    "message": null,
+    "details": {
+      "permission": "deploy",
+      "has_permission": false
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.353489",
+    "action": "verify",
+    "agent_type": "builder",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "d7c3150c-5d20-4fd7-bd19-af955fad8627"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.353731",
+    "action": "authorize",
+    "agent_type": "builder",
+    "status": "denied",
+    "message": null,
+    "details": {
+      "permission": "admin",
+      "has_permission": false
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.354075",
+    "action": "verify",
+    "agent_type": "qa",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "12b0791f-357e-4e86-9aa1-137f53b80455"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.354540",
+    "action": "revoke",
+    "agent_type": "qa",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "12b0791f-357e-4e86-9aa1-137f53b80455"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.355025",
+    "action": "verify",
+    "agent_type": null,
+    "status": "failed",
+    "message": "Token verification failed",
+    "details": {}
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.355615",
+    "action": "update_permissions",
+    "agent_type": "deployer",
+    "status": "success",
+    "message": null,
+    "details": {
+      "new_permissions": [
+        "read",
+        "deploy",
+        "rollback",
+        "emergency_stop"
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.355929",
+    "action": "verify",
+    "agent_type": "coordinator",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "3b4577ac-02e6-4f91-a80a-5861660dc182"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.356326",
+    "action": "authorize",
+    "agent_type": "coordinator",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permission": "coordinate",
+      "has_permission": true
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.356673",
+    "action": "verify",
+    "agent_type": "coordinator",
+    "status": "success",
+    "message": null,
+    "details": {
+      "jti": "3b4577ac-02e6-4f91-a80a-5861660dc182"
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.357127",
+    "action": "authorize",
+    "agent_type": "coordinator",
+    "status": "success",
+    "message": null,
+    "details": {
+      "permission": "assign",
+      "has_permission": true
+    }
+  },
+  {
+    "timestamp": "2025-11-05T20:49:52.357650",
+    "action": "cleanup",
+    "agent_type": null,
+    "status": "success",
+    "message": null,
+    "details": {
+      "cleaned_count": 0
+    }
+  }
+]

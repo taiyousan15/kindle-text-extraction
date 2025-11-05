@@ -42,6 +42,7 @@ class AgentType(Enum):
     DEPENDENCY_MANAGEMENT = "dependency_management"
     INFRASTRUCTURE_AS_CODE = "infrastructure_as_code"
     MLOPS = "mlops"
+    RAG = "rag"  # Hybrid Search RAG Agent
 
 
 @dataclass

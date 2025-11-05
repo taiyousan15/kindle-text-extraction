@@ -1,0 +1,14 @@
+{
+  "query": "What is machine learning and deep learning?",
+  "metrics": {
+    "timestamp": "2025-11-05T20:33:01.272174",
+    "query": "What is machine learning and deep learning?",
+    "method": "cross_encoder",
+    "original_count": 5,
+    "reranked_count": 5,
+    "filtered_count": 0,
+    "avg_confidence": 0.0,
+    "score_improvement": -0.05
+  },
+  "results": []
+}

@@ -1,0 +1,27 @@
+{
+  "query": "What is machine learning and deep learning?",
+  "metrics": {
+    "timestamp": "2025-11-05T20:33:06.115778",
+    "query": "What is machine learning and deep learning?",
+    "method": "cross_encoder",
+    "original_count": 1,
+    "reranked_count": 1,
+    "filtered_count": 1,
+    "avg_confidence": 0.8834,
+    "score_improvement": 7.2492
+  },
+  "results": [
+    {
+      "doc_id": "doc1",
+      "content": "Machine learning is a subset of artificial intelligence that enables systems to learn from data without explicit programming.",
+      "original_score": 0.85,
+      "rerank_score": 8.099174499511719,
+      "confidence": 0.8834,
+      "method": "cross_encoder",
+      "metadata": {
+        "source": "textbook",
+        "year": 2023
+      }
+    }
+  ]
+}

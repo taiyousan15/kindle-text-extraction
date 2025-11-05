@@ -1,0 +1,33 @@
+{
+  "query": "Explain machine learning algorithms",
+  "metrics": {
+    "timestamp": "2025-11-05T20:35:47.111252",
+    "query": "Explain machine learning algorithms",
+    "method": "cross_encoder",
+    "original_count": 5,
+    "reranked_count": 5,
+    "filtered_count": 2,
+    "avg_confidence": 0.6338,
+    "score_improvement": -6.5954
+  },
+  "results": [
+    {
+      "doc_id": "doc1",
+      "content": "Highly relevant content about machine learning algorithms",
+      "original_score": 0.65,
+      "rerank_score": 3.7321338653564453,
+      "confidence": 0.7177,
+      "method": "cross_encoder",
+      "metadata": null
+    },
+    {
+      "doc_id": "doc3",
+      "content": "Perfect match for machine learning explanation",
+      "original_score": 0.7,
+      "rerank_score": 0.8013789057731628,
+      "confidence": 0.5499,
+      "method": "cross_encoder",
+      "metadata": null
+    }
+  ]
+}
