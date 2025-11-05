@@ -1,0 +1,29 @@
+# Nixpacks Configuration for Railway.app
+# https://nixpacks.com/docs/configuration/file
+
+[phases.setup]
+nixPkgs = [
+  "python310",
+  "chromium",
+  "chromedriver",
+  "tesseract",
+  "tessdata"
+]
+
+[phases.install]
+cmds = [
+  "pip install --upgrade pip",
+  "pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+  "echo 'Build phase complete'"
+]
+
+[start]
+cmd = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+
+[variables]
+TESSDATA_PREFIX = "/nix/store/*/share/tessdata"
+TESSERACT_CMD = "/nix/store/*/bin/tesseract"

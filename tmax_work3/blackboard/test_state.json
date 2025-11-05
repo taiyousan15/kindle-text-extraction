@@ -1,0 +1,107 @@
+{
+  "tasks": {
+    "build-001": {
+      "task_id": "build-001",
+      "name": "Install dependencies",
+      "agent": "builder",
+      "status": "completed",
+      "priority": 10,
+      "dependencies": [],
+      "worktree": "worktrees/build_env",
+      "tmux_window": null,
+      "created_at": "2025-11-05T17:43:58.661975",
+      "started_at": "2025-11-05T17:43:58.662596",
+      "completed_at": "2025-11-05T17:43:59.664275",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "build-002": {
+      "task_id": "build-002",
+      "name": "Run tests",
+      "agent": "qa",
+      "status": "pending",
+      "priority": 8,
+      "dependencies": [
+        "build-001"
+      ],
+      "worktree": "worktrees/qa_env",
+      "tmux_window": null,
+      "created_at": "2025-11-05T17:43:58.662192",
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    }
+  },
+  "agents": {
+    "builder": {
+      "agent_type": "builder",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [
+        "build-001"
+      ],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:43:58.662333",
+      "worktree": "worktrees/build_env",
+      "tmux_window": null
+    },
+    "qa": {
+      "agent_type": "qa",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:43:58.662454",
+      "worktree": "worktrees/qa_env",
+      "tmux_window": null
+    }
+  },
+  "logs": [
+    {
+      "timestamp": "2025-11-05T17:43:58.662186",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: build-001 (Install dependencies) -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:43:58.662328",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: build-002 (Run tests) -> qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:43:58.662451",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:43:58.662555",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:43:58.662799",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:43:58.662966",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: build-001 -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:43:59.664594",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-001 (in_progress -> completed)"
+    }
+  ],
+  "metrics": {}
+}

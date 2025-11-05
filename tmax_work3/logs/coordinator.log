@@ -1,0 +1,80 @@
+✅ Blackboard initialized: tmax_work3/blackboard/state.json
+ℹ️ [INFO] 🤖 Agent registered: coordinator
+🎯 Coordinator Agent initialized
+   Repository: .
+   Deploy target: railway
+ℹ️ [INFO] 🚀 Initializing T-Max Work3 pipeline...
+ℹ️ [INFO] 📂 Creating git worktrees...
+❌ [ERROR] ❌ Failed to create worktree build_env: Preparing worktree (checking out 'main')
+fatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'
+
+❌ [ERROR] ❌ Failed to create worktree qa_env: Preparing worktree (checking out 'main')
+fatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'
+
+❌ [ERROR] ❌ Failed to create worktree deploy_env: Preparing worktree (checking out 'main')
+fatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'
+
+❌ [ERROR] ❌ Failed to create worktree monitor_env: Preparing worktree (checking out 'main')
+fatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'
+
+ℹ️ [INFO] 🖥️  Creating tmux session...
+ℹ️ [INFO] ✅ tmux session created: TMAX_FULLAUTO
+ℹ️ [INFO]    Access: tmux attach -t TMAX_FULLAUTO
+ℹ️ [INFO] 🔗 Building task DAG...
+ℹ️ [INFO] 📝 Task added: build-001 (Install dependencies) -> builder
+ℹ️ [INFO] 📝 Task added: build-002 (Run linters) -> builder
+ℹ️ [INFO] 📝 Task added: build-003 (Compile application) -> builder
+ℹ️ [INFO] 📝 Task added: qa-001 (Run unit tests) -> qa
+ℹ️ [INFO] 📝 Task added: qa-002 (Run integration tests) -> qa
+ℹ️ [INFO] 📝 Task added: security-001 (Security scan) -> security
+ℹ️ [INFO] 📝 Task added: deploy-001 (Deploy to railway) -> deployer
+ℹ️ [INFO] 📝 Task added: monitor-001 (Monitor deployment) -> performance
+ℹ️ [INFO] 📝 Task added: audit-001 (Generate final report) -> audit
+ℹ️ [INFO] ✅ Task DAG built: 9 tasks
+ℹ️ [INFO] 🤖 Agent registered: builder
+ℹ️ [INFO] 🤖 Agent registered: qa
+ℹ️ [INFO] 🤖 Agent registered: security
+ℹ️ [INFO] 🤖 Agent registered: deployer
+ℹ️ [INFO] 🤖 Agent registered: performance
+ℹ️ [INFO] 🤖 Agent registered: audit
+✅ [SUCCESS] ✅ Pipeline initialization complete
+ℹ️ [INFO] 🔄 Starting coordination loop...
+ℹ️ [INFO] 🚀 Executing task: build-001 (Install dependencies) via builder
+ℹ️ [INFO] 🔄 Task status updated: build-001 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: build-001 -> builder
+ℹ️ [INFO] 🔄 Task status updated: build-001 (in_progress -> completed)
+ℹ️ [INFO] 🚀 Executing task: build-002 (Run linters) via builder
+ℹ️ [INFO] 🔄 Task status updated: build-002 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: build-002 -> builder
+ℹ️ [INFO] 🔄 Task status updated: build-002 (in_progress -> completed)
+ℹ️ [INFO] 🚀 Executing task: build-003 (Compile application) via builder
+ℹ️ [INFO] 🔄 Task status updated: build-003 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: build-003 -> builder
+ℹ️ [INFO] 🔄 Task status updated: build-003 (in_progress -> completed)
+ℹ️ [INFO] 🚀 Executing task: qa-001 (Run unit tests) via qa
+ℹ️ [INFO] 🔄 Task status updated: qa-001 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: qa-001 -> qa
+ℹ️ [INFO] 🔄 Task status updated: qa-001 (in_progress -> completed)
+ℹ️ [INFO] 🚀 Executing task: security-001 (Security scan) via security
+ℹ️ [INFO] 🔄 Task status updated: security-001 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: security-001 -> security
+ℹ️ [INFO] 🔄 Task status updated: security-001 (in_progress -> completed)
+ℹ️ [INFO] 🚀 Executing task: qa-002 (Run integration tests) via qa
+ℹ️ [INFO] 🔄 Task status updated: qa-002 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: qa-002 -> qa
+ℹ️ [INFO] 🔄 Task status updated: qa-002 (in_progress -> completed)
+ℹ️ [INFO] 🚀 Executing task: deploy-001 (Deploy to railway) via deployer
+ℹ️ [INFO] 🔄 Task status updated: deploy-001 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: deploy-001 -> deployer
+ℹ️ [INFO] 🔄 Task status updated: deploy-001 (in_progress -> completed)
+ℹ️ [INFO] 🚀 Executing task: monitor-001 (Monitor deployment) via performance
+ℹ️ [INFO] 🔄 Task status updated: monitor-001 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: monitor-001 -> performance
+ℹ️ [INFO] 🔄 Task status updated: monitor-001 (in_progress -> completed)
+ℹ️ [INFO] 🚀 Executing task: audit-001 (Generate final report) via audit
+ℹ️ [INFO] 🔄 Task status updated: audit-001 (pending -> in_progress)
+ℹ️ [INFO] 📌 Task assigned: audit-001 -> audit
+ℹ️ [INFO] 🔄 Task status updated: audit-001 (in_progress -> completed)
+ℹ️ [INFO] 📊 Status: 9 completed, 0 in progress, 0 pending, 0 failed
+✅ [SUCCESS] ✅ All tasks completed successfully!
+ℹ️ [INFO] 📊 Final summary: {'timestamp': '2025-11-05T17:54:08.693107', 'tasks': {'completed': 9}, 'agents': {'coordinator': {'status': 'idle', 'completed': 0, 'failed': 0}, 'builder': {'status': 'idle', 'completed': 3, 'failed': 0}, 'qa': {'status': 'idle', 'completed': 2, 'failed': 0}, 'security': {'status': 'idle', 'completed': 1, 'failed': 0}, 'deployer': {'status': 'idle', 'completed': 1, 'failed': 0}, 'performance': {'status': 'idle', 'completed': 1, 'failed': 0}, 'audit': {'status': 'idle', 'completed': 1, 'failed': 0}}, 'metrics': {}}

@@ -90,9 +90,37 @@ class SeleniumKindleCapture:
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-blink-features=AutomationControlled')
 
+        # FIX: Comprehensive extension blocking to prevent JavaScript interference
+        # REASON: Extensions like MetaMask, Pocket Universe redefine window.ethereum
+        #         and intercept keyboard events, causing page turn failures
+        options.add_argument('--disable-extensions')
+        options.add_argument('--disable-plugins')
+        options.add_argument('--disable-background-networking')
+        options.add_argument('--disable-sync')
+        options.add_argument('--disable-translate')
+        options.add_argument('--disable-default-apps')
+        options.add_argument('--disable-component-extensions-with-background-pages')
+
+        # FIX: Use clean Chrome profile to avoid loading user extensions
+        # REASON: User profile may have extensions that --disable-extensions doesn't block
+        import tempfile
+        temp_user_data = tempfile.mkdtemp(prefix='chrome_selenium_')
+        options.add_argument(f'--user-data-dir={temp_user_data}')
+        logger.info(f"🔒 一時的なChromeプロファイルを使用: {temp_user_data}")
+
         # Bot検出回避のための追加オプション
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
         options.add_experimental_option('useAutomationExtension', False)
+
+        # FIX: Disable notifications and other intrusive features
+        # REASON: Prevent popups that might interfere with automation
+        prefs = {
+            "profile.default_content_setting_values.notifications": 2,
+            "profile.default_content_settings.popups": 0,
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False
+        }
+        options.add_experimental_option('prefs', prefs)
 
         # User-Agent（Kindleが正常に動作するため）
         options.add_argument(
@@ -533,10 +561,35 @@ class SeleniumKindleCapture:
                     error_message="Amazonログイン失敗"
                 )
 
-            # 本を開く
+            # 本を開く（DRM初期化のためライブラリ経由で開く）
             logger.info(f"📖 本を開いています: {self.config.book_url}")
-            self.driver.get(self.config.book_url)
-            time.sleep(5)  # 本の読み込み待機
+
+            # FIX: Open book through library to ensure proper DRM initialization
+            # REASON: Direct ASIN URLs fail DRM handshake, causing "Something Went Wrong" error
+            if not self._open_book_via_library(self.config.book_url):
+                return SeleniumCaptureResult(
+                    success=False,
+                    captured_pages=0,
+                    image_paths=[],
+                    error_message="本を開けませんでした。Kindleライブラリに本が存在するか確認してください。"
+                )
+
+            # FIX: Critical - Verify book opened successfully BEFORE starting capture
+            # REASON: Prevent capturing error pages when book failed to open
+            logger.info("🔍 本が正常に開いたか最終確認中...")
+            time.sleep(3)  # Wait for any delayed error messages to appear
+
+            if self._check_for_kindle_error_page():
+                logger.error("❌ 本を開けませんでした: Kindleエラーページが検出されました")
+                logger.error("   キャプチャを開始できません")
+                return SeleniumCaptureResult(
+                    success=False,
+                    captured_pages=0,
+                    image_paths=[],
+                    error_message="本を開けませんでした: Kindleエラーページが表示されています。本がライブラリに存在するか確認してください。"
+                )
+
+            logger.info("✅ 本が正常に開きました。キャプチャを開始します")
 
             # ページ数自動検出（可能な場合）
             actual_total_pages = self._detect_total_pages()
@@ -616,28 +669,46 @@ class SeleniumKindleCapture:
                     # REASON: Ensure page actually changes before continuing
                     turn_success = False
                     for retry in range(3):  # 最大3回リトライ
-                        self._turn_page()
-                        time.sleep(2)  # ページ読み込み待機
+                        try:
+                            logger.debug(f"🔄 ページめくり試行 {retry + 1}/3 (ページ {page} → {page + 1})")
+                            self._turn_page()
 
-                        # FIX: Verify page changed after turning
-                        # REASON: Immediate detection of failed page turn
-                        new_hash = self._calculate_screenshot_hash()
-                        if new_hash != current_hash:
-                            turn_success = True
-                            break
-                        else:
-                            logger.warning(f"⚠️ ページめくり失敗 (リトライ {retry + 1}/3)")
-                            time.sleep(1)  # 追加待機
+                            # FIX: Increased wait time from 2s to 4s for slow page loads
+                            # REASON: Kindle Cloud Reader may take time to render new page
+                            #         especially with images or slow network
+                            time.sleep(4)  # ページ読み込み待機（2秒→4秒に増加）
+
+                            # FIX: Verify page changed after turning
+                            # REASON: Immediate detection of failed page turn
+                            new_hash = self._calculate_screenshot_hash()
+                            if new_hash != current_hash:
+                                turn_success = True
+                                logger.debug(f"✅ ページめくり成功 (試行 {retry + 1}/3)")
+                                break
+                            else:
+                                logger.warning(
+                                    f"⚠️ ページめくり失敗 (リトライ {retry + 1}/3) - "
+                                    f"ページハッシュが変化していません"
+                                )
+                                if retry < 2:  # 最後のリトライでない場合
+                                    time.sleep(2)  # 追加待機（1秒→2秒に増加）
+                        except Exception as turn_error:
+                            logger.error(f"❌ ページめくり中にエラー (試行 {retry + 1}/3): {turn_error}")
+                            if retry < 2:
+                                time.sleep(2)
+                            continue
 
                     if not turn_success:
                         logger.error(f"❌ ページめくりが3回失敗しました (ページ {page})")
+                        logger.error(f"   デバッグ情報: 現在のURL = {self.driver.current_url}")
+                        logger.error(f"   デバッグ情報: ページタイトル = {self.driver.title}")
                         # FIX: Stop capture after repeated page turn failures
                         # REASON: Continuing would only create more duplicates
                         return SeleniumCaptureResult(
                             success=False,
                             captured_pages=len(image_paths),
                             image_paths=image_paths,
-                            error_message=f"ページめくり失敗: ページ {page} で3回連続失敗"
+                            error_message=f"ページめくり失敗: ページ {page} で3回連続失敗。ブラウザ拡張機能を無効化するか、ネットワーク接続を確認してください。"
                         )
 
                 page += 1
@@ -663,6 +734,303 @@ class SeleniumKindleCapture:
 
         finally:
             self.close()
+
+    def _extract_asin_from_url(self, url: str) -> Optional[str]:
+        """
+        KindleブックURLからASINを抽出
+
+        Args:
+            url: Kindle本のURL
+
+        Returns:
+            Optional[str]: ASIN、抽出失敗時はNone
+        """
+        import re
+
+        # URLパターン: https://read.amazon.co.jp/?asin=B0FPDT572W&...
+        # または: https://read.amazon.co.jp/kindle-library/B0FPDT572W
+        patterns = [
+            r'[?&]asin=([A-Z0-9]{10})',  # Query parameter
+            r'/([A-Z0-9]{10})(?:[/?#]|$)',  # Path segment
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, url)
+            if match:
+                asin = match.group(1)
+                logger.info(f"📚 ASIN extracted: {asin}")
+                return asin
+
+        logger.error(f"❌ ASINの抽出に失敗しました: {url}")
+        return None
+
+    def _check_for_kindle_error_page(self) -> bool:
+        """
+        Kindleエラーページが表示されているかチェック
+
+        FIX: Enhanced error detection with screenshot logging
+        REASON: Better debugging and immediate error detection
+
+        Returns:
+            bool: エラーページが表示されている場合True
+        """
+        try:
+            # エラーダイアログの検出（複数パターン）
+            error_indicators = [
+                (By.XPATH, "//*[contains(text(), 'Something Went Wrong')]"),
+                (By.XPATH, "//*[contains(text(), 'Oops')]"),
+                (By.XPATH, "//*[contains(text(), 'try to open this book from the library')]"),
+                (By.XPATH, "//*[contains(text(), '何か問題が発生しました')]"),  # Japanese error message
+                (By.CLASS_NAME, "error-dialog"),
+                (By.ID, "kindleReaderError"),
+            ]
+
+            for by, selector in error_indicators:
+                try:
+                    elements = self.driver.find_elements(by, selector)
+                    if elements and len(elements) > 0:
+                        logger.error(f"❌ Kindleエラーページを検出: {selector}")
+
+                        # FIX: Save error screenshot for debugging
+                        # REASON: Helps diagnose why book failed to open
+                        try:
+                            error_screenshot_path = self.output_dir / "kindle_error.png"
+                            self.driver.save_screenshot(str(error_screenshot_path))
+                            logger.error(f"📸 エラースクリーンショット保存: {error_screenshot_path}")
+                        except Exception as screenshot_error:
+                            logger.warning(f"⚠️ エラースクリーンショット保存失敗: {screenshot_error}")
+
+                        return True
+                except Exception:
+                    continue
+
+            return False
+
+        except Exception as e:
+            logger.warning(f"⚠️ エラーページチェック中に例外: {e}")
+            return False
+
+    def _open_book_via_library(self, book_url: str) -> bool:
+        """
+        Kindleライブラリ経由で本を開く（DRM初期化のため）
+
+        FIX: Proper DRM initialization through library access with retry and better error handling
+        REASON: Direct ASIN URL fails with "Something Went Wrong" error
+
+        Args:
+            book_url: 本のURL（ASINを含む）
+
+        Returns:
+            bool: 成功した場合True
+        """
+        try:
+            # Step 1: ASINを抽出
+            asin = self._extract_asin_from_url(book_url)
+            if not asin:
+                logger.error("❌ URLからASINを抽出できませんでした")
+                logger.error(f"   提供されたURL: {book_url}")
+                logger.error("   正しい形式: https://read.amazon.co.jp/?asin=B0FPDT572W")
+                return False
+
+            # FIX: Validate login state before accessing library
+            # REASON: Expired cookies cause immediate "Something Went Wrong" error
+            logger.info("🔐 ログイン状態を確認しています...")
+            self.driver.get("https://www.amazon.co.jp")
+            time.sleep(2)
+
+            # Check if we're logged in by looking for account element
+            try:
+                account_element = self.driver.find_element(By.ID, "nav-link-accountList")
+                logger.info("✅ ログイン状態: 有効")
+            except NoSuchElementException:
+                logger.warning("⚠️ ログイン状態が無効です。Cookie再認証を試行します...")
+                # Try to re-login
+                if not self.login_amazon():
+                    logger.error("❌ 再ログインに失敗しました")
+                    return False
+
+            # Step 2: Kindleライブラリにアクセス
+            logger.info("📚 Kindleライブラリにアクセスしています...")
+            self.driver.get("https://read.amazon.co.jp/kindle-library")
+            time.sleep(8)  # FIX: Increased from 5s to 8s for full library load
+            # REASON: Library page loads books dynamically, needs more time
+
+            # FIX: Dismiss Kindle for Web terms agreement popup if present
+            # REASON: First-time access shows terms agreement dialog that blocks interaction
+            try:
+                logger.info("🔍 規約同意ポップアップをチェックしています...")
+                wait = WebDriverWait(self.driver, 5)
+
+                # Try multiple strategies to find and click the OK button
+                button_found = False
+
+                # Strategy 1: Text-based selectors (case-insensitive)
+                button_selectors = [
+                    (By.XPATH, "//button[contains(translate(text(), 'OK', 'ok'), 'ok')]"),
+                    (By.XPATH, "//button[contains(text(), 'OK')]"),
+                    (By.XPATH, "//button[contains(text(), 'Ok')]"),
+                    (By.XPATH, "//button[contains(text(), 'ok')]"),
+                    (By.XPATH, "//button[contains(text(), '承諾')]"),
+                    (By.CSS_SELECTOR, "button[class*='dialog'] button"),
+                    (By.CSS_SELECTOR, "[role='dialog'] button"),
+                    (By.CSS_SELECTOR, "button"),  # Last resort: any button
+                ]
+
+                for by, selector in button_selectors:
+                    try:
+                        ok_button = wait.until(EC.element_to_be_clickable((by, selector)))
+                        # Verify button text contains OK-like text
+                        button_text = ok_button.text.lower()
+                        if 'ok' in button_text or '承諾' in button_text or button_text == '':
+                            ok_button.click()
+                            logger.info(f"✅ 規約同意ポップアップを閉じました (selector: {selector})")
+                            button_found = True
+                            time.sleep(2)  # Wait for dialog to close
+                            break
+                    except (TimeoutException, NoSuchElementException):
+                        continue
+                    except Exception as click_error:
+                        logger.debug(f"   ボタンクリック試行失敗: {click_error}")
+                        continue
+
+                if not button_found:
+                    logger.debug("   規約同意ポップアップは表示されていません（正常）")
+
+            except Exception as popup_error:
+                logger.debug(f"   ポップアップ処理エラー（無視可能）: {popup_error}")
+
+            # FIX: Check if library page loaded successfully
+            # REASON: Sometimes redirects to login if cookies expired
+            current_url = self.driver.current_url.lower()
+            if "signin" in current_url or "ap/mfa" in current_url:
+                logger.error("❌ ライブラリアクセス失敗: ログインページにリダイレクトされました")
+                logger.error("   Cookieが無効になっている可能性があります")
+                return False
+
+            # Step 3: ライブラリ内で本を検索してクリック
+            # FIX: Enhanced book finding with debugging and multiple strategies
+            # REASON: Original selectors didn't match Kindle library HTML structure
+            logger.info(f"🔍 ライブラリ内で本を検索: ASIN={asin}")
+
+            # FIX: Save library page screenshot for debugging
+            # REASON: Helps identify why book isn't found
+            try:
+                library_screenshot_path = self.output_dir / "kindle_library_debug.png"
+                self.driver.save_screenshot(str(library_screenshot_path))
+                logger.info(f"📸 ライブラリページスクリーンショット保存: {library_screenshot_path}")
+            except Exception as screenshot_error:
+                logger.warning(f"⚠️ ライブラリスクリーンショット保存失敗: {screenshot_error}")
+
+            # FIX: Log all book links found on the page for debugging
+            # REASON: Helps understand the actual HTML structure
+            try:
+                all_links = self.driver.find_elements(By.TAG_NAME, "a")
+                kindle_links = [link.get_attribute("href") for link in all_links if link.get_attribute("href") and "asin" in link.get_attribute("href").lower()]
+                logger.info(f"📚 ライブラリ内で発見されたKindle本リンク数: {len(kindle_links)}")
+                if kindle_links:
+                    logger.info(f"   最初の3件の例: {kindle_links[:3]}")
+                    # Check if our ASIN is in any of these links
+                    matching_links = [link for link in kindle_links if asin.lower() in link.lower()]
+                    if matching_links:
+                        logger.info(f"✅ ASIN {asin} を含むリンクを発見: {len(matching_links)}件")
+                    else:
+                        logger.warning(f"⚠️ ASIN {asin} を含むリンクが見つかりません")
+            except Exception as debug_error:
+                logger.warning(f"⚠️ デバッグ情報取得失敗: {debug_error}")
+
+            # Method 1: ASINを含むリンクを探す（改善版）
+            # FIX: More comprehensive selectors based on actual Kindle library structure
+            # REASON: Original selectors were too generic and didn't match
+            book_link_selectors = [
+                # Kindle Cloud Reader specific selectors
+                (By.CSS_SELECTOR, f"a[href*='read.amazon'][href*='{asin}']"),
+                (By.CSS_SELECTOR, f"a[href*='kindle'][href*='{asin}']"),
+                (By.XPATH, f"//a[contains(@href, 'read.amazon') and contains(@href, '{asin}')]"),
+                (By.XPATH, f"//a[contains(@href, '{asin}') and contains(@href, 'ref_')]"),
+                # Generic fallbacks
+                (By.CSS_SELECTOR, f"a[href*='{asin}']"),
+                (By.XPATH, f"//a[contains(@href, '{asin}')]"),
+            ]
+
+            book_found = False
+            for by, selector in book_link_selectors:
+                try:
+                    logger.debug(f"   試行中: {selector}")
+                    wait = WebDriverWait(self.driver, 5)  # Reduced to 5s per selector
+                    book_link = wait.until(EC.element_to_be_clickable((by, selector)))
+                    logger.info(f"✅ 本が見つかりました: {selector}")
+                    logger.info(f"   リンクURL: {book_link.get_attribute('href')}")
+                    book_link.click()
+                    book_found = True
+                    break
+                except TimeoutException:
+                    logger.debug(f"   リンク検索失敗（次を試行）: {selector}")
+                    continue
+                except Exception as click_error:
+                    logger.warning(f"   クリック失敗: {click_error}")
+                    continue
+
+            # FIX: Remove dangerous fallback to direct URL
+            # REASON: Direct ASIN URLs cause "Something Went Wrong" error
+            if not book_found:
+                logger.error("❌ ライブラリ内で本が見つかりませんでした")
+                logger.error("")
+                logger.error("   考えられる原因:")
+                logger.error(f"   1. ASIN {asin} の本がこのAmazonアカウントのライブラリに存在しない")
+                logger.error("   2. 本が購入済みでない、またはKindle Unlimitedで現在借りていない")
+                logger.error("   3. 本が別のAmazonアカウントで購入されている")
+                logger.error("   4. Kindleライブラリのページ構造が変更された")
+                logger.error("")
+                logger.error("📋 解決方法:")
+                logger.error("   1. https://www.amazon.co.jp/hz/mycd/digital-console/contentlist/booksAll にアクセス")
+                logger.error("   2. 本のタイトルを検索して、Kindleライブラリに存在するか確認")
+                logger.error("   3. 本を「今すぐ読む」でKindle Cloud Readerで手動で開く")
+                logger.error("   4. URLバーから完全なURLをコピー（例: https://read.amazon.co.jp/?asin=...）")
+                logger.error("   5. そのURLをこのツールに入力してください")
+                logger.error("")
+                logger.error(f"   デバッグ用スクリーンショット: {self.output_dir / 'kindle_library_debug.png'}")
+                return False
+
+            # Step 4: 本の読み込み待機
+            logger.info("⏳ 本の読み込みを待機しています...")
+            time.sleep(8)  # DRM初期化とレンダリングのための待機時間を増加
+
+            # Step 5: エラーページチェック
+            if self._check_for_kindle_error_page():
+                logger.error("❌ 本を開けませんでした: Kindleエラーページが表示されています")
+                logger.error("   考えられる原因:")
+                logger.error("   1. 本がKindleライブラリに存在しない（購入していない本）")
+                logger.error("   2. DRMライセンスが無効（デバイス制限に達している）")
+                logger.error("   3. ネットワークエラー（Amazonサーバーに接続できない）")
+                logger.error("   4. 本が別のAmazonアカウントで購入されている")
+                logger.error(f"   現在のURL: {self.driver.current_url}")
+                logger.error(f"   ASIN: {asin}")
+
+                # FIX: Provide actionable solution
+                # REASON: Help user understand what to do next
+                logger.error("")
+                logger.error("📋 解決方法:")
+                logger.error("   1. https://www.amazon.co.jp/hz/mycd/digital-console/contentlist/booksAll にアクセス")
+                logger.error("   2. 本のタイトルを検索して、Kindleライブラリに存在するか確認")
+                logger.error("   3. 本を「今すぐ読む」でKindle Cloud Readerで開く")
+                logger.error("   4. URLバーからASINを含む完全なURLをコピー")
+                logger.error("   5. そのURLをこのツールに入力してください")
+                logger.error("")
+                return False
+
+            # Step 6: 本が正常に読み込まれたか確認
+            current_url = self.driver.current_url.lower()
+            if "read.amazon" in current_url and asin.lower() in current_url:
+                logger.info("✅ 本が正常に開きました")
+                return True
+            else:
+                logger.warning(f"⚠️ 本が開いたか不明です (URL: {current_url})")
+                # エラーページでなければ成功とみなす
+                return not self._check_for_kindle_error_page()
+
+        except Exception as e:
+            logger.error(f"❌ ライブラリ経由での本オープンエラー: {e}", exc_info=True)
+            return False
 
     def _detect_total_pages(self) -> Optional[int]:
         """
@@ -775,10 +1143,54 @@ class SeleniumKindleCapture:
             return False
 
     def _turn_page(self):
-        """次のページへ"""
-        body = self.driver.find_element(By.TAG_NAME, "body")
-        body.send_keys(Keys.ARROW_RIGHT)
-        logger.debug("⏭️ ページ送り: 右矢印キー")
+        """
+        次のページへ（複数の方法を試行）
+
+        FIX: Improved page turning with multiple fallback strategies
+        REASON: Single arrow key method was unreliable due to focus/extension issues
+
+        Strategies (in order):
+        1. JavaScript click on next page button (most reliable)
+        2. Arrow key to body element (original method)
+        3. Arrow key with explicit focus (fallback)
+        """
+        try:
+            # Strategy 1: Try JavaScript click on next page button (most reliable)
+            # Kindle Cloud Reader uses various selectors for the next button
+            js_click_selectors = [
+                "document.querySelector('.navBar-button-next')?.click()",
+                "document.querySelector('[aria-label=\"Next Page\"]')?.click()",
+                "document.querySelector('[aria-label=\"次のページ\"]')?.click()",
+                "document.querySelector('#kindleReader_pageTurnAreaRight')?.click()",
+                "document.querySelector('.kr-right-pageTurn')?.click()",
+            ]
+
+            for js_code in js_click_selectors:
+                try:
+                    result = self.driver.execute_script(js_code)
+                    if result is not False:  # Click succeeded
+                        logger.debug("⏭️ ページ送り: JavaScript click")
+                        return
+                except Exception:
+                    continue
+
+            # Strategy 2: Original arrow key method
+            body = self.driver.find_element(By.TAG_NAME, "body")
+            body.send_keys(Keys.ARROW_RIGHT)
+            logger.debug("⏭️ ページ送り: 右矢印キー")
+
+        except Exception as e:
+            # Strategy 3: Fallback - try to focus explicitly then send key
+            logger.warning(f"⚠️ ページ送りエラー、フォールバック試行: {e}")
+            try:
+                # Focus on the reader container
+                self.driver.execute_script("document.activeElement.blur(); document.body.focus();")
+                body = self.driver.find_element(By.TAG_NAME, "body")
+                body.send_keys(Keys.ARROW_RIGHT)
+                logger.debug("⏭️ ページ送り: フォーカス後の右矢印キー")
+            except Exception as fallback_error:
+                logger.error(f"❌ ページ送り完全失敗: {fallback_error}")
+                raise
 
     def close(self):
         """WebDriver終了"""

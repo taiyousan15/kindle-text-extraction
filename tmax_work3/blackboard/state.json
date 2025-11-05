@@ -1,0 +1,855 @@
+{
+  "tasks": {
+    "build-001": {
+      "task_id": "build-001",
+      "name": "Install dependencies",
+      "agent": "builder",
+      "status": "completed",
+      "priority": 10,
+      "dependencies": [],
+      "worktree": "worktrees/build_env",
+      "tmux_window": "builder",
+      "created_at": "2025-11-05T17:54:00.980530",
+      "started_at": "2025-11-05T17:54:00.987084",
+      "completed_at": "2025-11-05T17:54:03.997164",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "build-002": {
+      "task_id": "build-002",
+      "name": "Run linters",
+      "agent": "builder",
+      "status": "completed",
+      "priority": 9,
+      "dependencies": [
+        "build-001"
+      ],
+      "worktree": "worktrees/build_env",
+      "tmux_window": "builder",
+      "created_at": "2025-11-05T17:54:00.981165",
+      "started_at": "2025-11-05T17:54:05.004094",
+      "completed_at": "2025-11-05T17:54:08.012215",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "build-003": {
+      "task_id": "build-003",
+      "name": "Compile application",
+      "agent": "builder",
+      "status": "completed",
+      "priority": 8,
+      "dependencies": [
+        "build-002"
+      ],
+      "worktree": "worktrees/build_env",
+      "tmux_window": "builder",
+      "created_at": "2025-11-05T17:54:00.981619",
+      "started_at": "2025-11-05T17:54:09.018718",
+      "completed_at": "2025-11-05T17:54:12.027143",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "qa-001": {
+      "task_id": "qa-001",
+      "name": "Run unit tests",
+      "agent": "qa",
+      "status": "completed",
+      "priority": 7,
+      "dependencies": [
+        "build-003"
+      ],
+      "worktree": "worktrees/qa_env",
+      "tmux_window": "qa",
+      "created_at": "2025-11-05T17:54:00.982015",
+      "started_at": "2025-11-05T17:54:13.034443",
+      "completed_at": "2025-11-05T17:54:16.045688",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "qa-002": {
+      "task_id": "qa-002",
+      "name": "Run integration tests",
+      "agent": "qa",
+      "status": "completed",
+      "priority": 6,
+      "dependencies": [
+        "qa-001"
+      ],
+      "worktree": "worktrees/qa_env",
+      "tmux_window": "qa",
+      "created_at": "2025-11-05T17:54:00.982393",
+      "started_at": "2025-11-05T17:54:20.072028",
+      "completed_at": "2025-11-05T17:54:23.100042",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "security-001": {
+      "task_id": "security-001",
+      "name": "Security scan",
+      "agent": "security",
+      "status": "completed",
+      "priority": 5,
+      "dependencies": [
+        "build-003"
+      ],
+      "worktree": "worktrees/build_env",
+      "tmux_window": "builder",
+      "created_at": "2025-11-05T17:54:00.983112",
+      "started_at": "2025-11-05T17:54:16.047621",
+      "completed_at": "2025-11-05T17:54:19.065430",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "deploy-001": {
+      "task_id": "deploy-001",
+      "name": "Deploy to railway",
+      "agent": "deployer",
+      "status": "completed",
+      "priority": 4,
+      "dependencies": [
+        "qa-002",
+        "security-001"
+      ],
+      "worktree": "worktrees/deploy_env",
+      "tmux_window": "deploy",
+      "created_at": "2025-11-05T17:54:00.983544",
+      "started_at": "2025-11-05T17:54:24.106757",
+      "completed_at": "2025-11-05T17:54:27.157275",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "monitor-001": {
+      "task_id": "monitor-001",
+      "name": "Monitor deployment",
+      "agent": "performance",
+      "status": "completed",
+      "priority": 3,
+      "dependencies": [
+        "deploy-001"
+      ],
+      "worktree": "worktrees/monitor_env",
+      "tmux_window": "monitor",
+      "created_at": "2025-11-05T17:54:00.983952",
+      "started_at": "2025-11-05T17:54:28.163906",
+      "completed_at": "2025-11-05T17:54:31.202586",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    },
+    "audit-001": {
+      "task_id": "audit-001",
+      "name": "Generate final report",
+      "agent": "audit",
+      "status": "completed",
+      "priority": 2,
+      "dependencies": [
+        "monitor-001"
+      ],
+      "worktree": "worktrees/build_env",
+      "tmux_window": "coordinator",
+      "created_at": "2025-11-05T17:54:00.984372",
+      "started_at": "2025-11-05T17:54:32.209909",
+      "completed_at": "2025-11-05T17:54:35.223320",
+      "error": null,
+      "retry_count": 0,
+      "metadata": {}
+    }
+  },
+  "agents": {
+    "coordinator": {
+      "agent_type": "coordinator",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:54:00.884981",
+      "worktree": null,
+      "tmux_window": null
+    },
+    "builder": {
+      "agent_type": "builder",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [
+        "build-001",
+        "build-002",
+        "build-003"
+      ],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:54:00.984789",
+      "worktree": "worktrees/build_env",
+      "tmux_window": "builder"
+    },
+    "qa": {
+      "agent_type": "qa",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [
+        "qa-001",
+        "qa-002"
+      ],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:54:00.985178",
+      "worktree": "worktrees/qa_env",
+      "tmux_window": "qa"
+    },
+    "security": {
+      "agent_type": "security",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [
+        "security-001"
+      ],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:54:00.985541",
+      "worktree": "worktrees/build_env",
+      "tmux_window": "builder"
+    },
+    "deployer": {
+      "agent_type": "deployer",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [
+        "deploy-001"
+      ],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:54:00.985900",
+      "worktree": "worktrees/deploy_env",
+      "tmux_window": "deploy"
+    },
+    "performance": {
+      "agent_type": "performance",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [
+        "monitor-001"
+      ],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:54:00.986289",
+      "worktree": "worktrees/monitor_env",
+      "tmux_window": "monitor"
+    },
+    "audit": {
+      "agent_type": "audit",
+      "status": "idle",
+      "current_task": null,
+      "completed_tasks": [
+        "audit-001"
+      ],
+      "failed_tasks": [],
+      "last_heartbeat": "2025-11-05T17:54:00.986657",
+      "worktree": "worktrees/build_env",
+      "tmux_window": "coordinator"
+    }
+  },
+  "logs": [
+    {
+      "timestamp": "2025-11-05T17:53:33.460907",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: deployer"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:33.461309",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: performance"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:33.461960",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: audit"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:33.461970",
+      "level": "SUCCESS",
+      "agent": null,
+      "message": "✅ Pipeline initialization complete"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:33.461974",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Starting coordination loop..."
+    },
+    {
+      "timestamp": "2025-11-05T17:53:33.462006",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: build-001 (Install dependencies) via builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:33.462361",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:33.462732",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: build-001 -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:36.472707",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:37.475098",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: build-002 (Run linters) via builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:37.475507",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-002 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:37.475781",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: build-002 -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:40.568598",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-002 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:41.572870",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: build-003 (Compile application) via builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:41.573544",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-003 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:41.574129",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: build-003 -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:44.587302",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-003 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:45.588130",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: qa-001 (Run unit tests) via qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:45.588758",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: qa-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:45.589411",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: qa-001 -> qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:48.597150",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: qa-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:48.597693",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: security-001 (Security scan) via security"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:48.598085",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: security-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:48.598459",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: security-001 -> security"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:51.610728",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: security-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:52.612291",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: qa-002 (Run integration tests) via qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:52.613946",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: qa-002 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:52.614992",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: qa-002 -> qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:55.624588",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: qa-002 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:56.629565",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: deploy-001 (Deploy to railway) via deployer"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:56.630331",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: deploy-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:56.630748",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: deploy-001 -> deployer"
+    },
+    {
+      "timestamp": "2025-11-05T17:53:59.642529",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: deploy-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.648123",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: monitor-001 (Monitor deployment) via performance"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.649032",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: monitor-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.885676",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: coordinator"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.885693",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Initializing T-Max Work3 pipeline..."
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.885696",
+      "level": "INFO",
+      "agent": null,
+      "message": "📂 Creating git worktrees..."
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.898014",
+      "level": "ERROR",
+      "agent": null,
+      "message": "❌ Failed to create worktree build_env: Preparing worktree (checking out 'main')\nfatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'\n"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.909911",
+      "level": "ERROR",
+      "agent": null,
+      "message": "❌ Failed to create worktree qa_env: Preparing worktree (checking out 'main')\nfatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'\n"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.921776",
+      "level": "ERROR",
+      "agent": null,
+      "message": "❌ Failed to create worktree deploy_env: Preparing worktree (checking out 'main')\nfatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'\n"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.935348",
+      "level": "ERROR",
+      "agent": null,
+      "message": "❌ Failed to create worktree monitor_env: Preparing worktree (checking out 'main')\nfatal: 'main' is already checked out at '/Users/matsumototoshihiko/div/Kindle文字起こしツール'\n"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.935393",
+      "level": "INFO",
+      "agent": null,
+      "message": "🖥️  Creating tmux session..."
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.980393",
+      "level": "INFO",
+      "agent": null,
+      "message": "✅ tmux session created: TMAX_FULLAUTO"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.980474",
+      "level": "INFO",
+      "agent": null,
+      "message": "   Access: tmux attach -t TMAX_FULLAUTO"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.980493",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔗 Building task DAG..."
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.981160",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: build-001 (Install dependencies) -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.981616",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: build-002 (Run linters) -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.982012",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: build-003 (Compile application) -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.982390",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: qa-001 (Run unit tests) -> qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.983104",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: qa-002 (Run integration tests) -> qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.983540",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: security-001 (Security scan) -> security"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.983939",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: deploy-001 (Deploy to railway) -> deployer"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.984367",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: monitor-001 (Monitor deployment) -> performance"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.984776",
+      "level": "INFO",
+      "agent": null,
+      "message": "📝 Task added: audit-001 (Generate final report) -> audit"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.984782",
+      "level": "INFO",
+      "agent": null,
+      "message": "✅ Task DAG built: 9 tasks"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.985176",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.985539",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.985898",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: security"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.986281",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: deployer"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.986656",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: performance"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.987046",
+      "level": "INFO",
+      "agent": null,
+      "message": "🤖 Agent registered: audit"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.987050",
+      "level": "SUCCESS",
+      "agent": null,
+      "message": "✅ Pipeline initialization complete"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.987054",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Starting coordination loop..."
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.987079",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: build-001 (Install dependencies) via builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.987507",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:00.987919",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: build-001 -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:03.998377",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:05.004072",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: build-002 (Run linters) via builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:05.004827",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-002 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:05.005413",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: build-002 -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:08.013330",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-002 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:09.018673",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: build-003 (Compile application) via builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:09.019636",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-003 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:09.020208",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: build-003 -> builder"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:12.029084",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: build-003 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:13.034423",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: qa-001 (Run unit tests) via qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:13.035357",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: qa-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:13.035918",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: qa-001 -> qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:16.046773",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: qa-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:16.047610",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: security-001 (Security scan) via security"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:16.048407",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: security-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:16.049189",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: security-001 -> security"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:19.066372",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: security-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:20.071990",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: qa-002 (Run integration tests) via qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:20.073383",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: qa-002 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:20.074140",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: qa-002 -> qa"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:23.101179",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: qa-002 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:24.106737",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: deploy-001 (Deploy to railway) via deployer"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:24.107641",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: deploy-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:24.108401",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: deploy-001 -> deployer"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:27.158236",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: deploy-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:28.163887",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: monitor-001 (Monitor deployment) via performance"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:28.164679",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: monitor-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:28.165282",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: monitor-001 -> performance"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:31.204032",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: monitor-001 (in_progress -> completed)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:32.209884",
+      "level": "INFO",
+      "agent": null,
+      "message": "🚀 Executing task: audit-001 (Generate final report) via audit"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:32.211266",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: audit-001 (pending -> in_progress)"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:32.212179",
+      "level": "INFO",
+      "agent": null,
+      "message": "📌 Task assigned: audit-001 -> audit"
+    },
+    {
+      "timestamp": "2025-11-05T17:54:35.224387",
+      "level": "INFO",
+      "agent": null,
+      "message": "🔄 Task status updated: audit-001 (in_progress -> completed)"
+    }
+  ],
+  "metrics": {}
+}

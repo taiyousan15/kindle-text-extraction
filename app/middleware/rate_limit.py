@@ -50,9 +50,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             # Add rate limit info to response headers (if available)
             if hasattr(request.state, "view_rate_limit"):
                 limit_data = request.state.view_rate_limit
-                response.headers["X-RateLimit-Limit"] = str(limit_data.get("limit", ""))
-                response.headers["X-RateLimit-Remaining"] = str(limit_data.get("remaining", ""))
-                response.headers["X-RateLimit-Reset"] = str(limit_data.get("reset", ""))
+                # Handle both dict and tuple formats from SlowAPI
+                if isinstance(limit_data, dict):
+                    response.headers["X-RateLimit-Limit"] = str(limit_data.get("limit", ""))
+                    response.headers["X-RateLimit-Remaining"] = str(limit_data.get("remaining", ""))
+                    response.headers["X-RateLimit-Reset"] = str(limit_data.get("reset", ""))
+                elif isinstance(limit_data, tuple) and len(limit_data) >= 3:
+                    # Tuple format: (limit, remaining, reset)
+                    response.headers["X-RateLimit-Limit"] = str(limit_data[0])
+                    response.headers["X-RateLimit-Remaining"] = str(limit_data[1])
+                    response.headers["X-RateLimit-Reset"] = str(limit_data[2])
 
             return response
 
