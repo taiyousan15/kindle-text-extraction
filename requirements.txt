@@ -26,7 +26,7 @@ numpy==1.26.2
 # ==================== Auto Capture ====================
 pyautogui==0.9.54
 selenium==4.15.2
-webdriver-manager==4.0.1
+webdriver-manager==4.0.2
 
 # ==================== RAG (Retrieval Augmented Generation) ====================
 langchain==0.0.340
